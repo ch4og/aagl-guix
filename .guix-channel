@@ -6,7 +6,6 @@
  (name 'aagl)
  (url "https://codeberg.org/ch4og/aagl-guix.git")
  (branch "main")
- (directory "guix")
  (dependencies
   (channel
    (name nonguix)
