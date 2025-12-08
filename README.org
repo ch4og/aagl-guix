@@ -1,0 +1,92 @@
+# SPDX-FileCopyrightText: 2025 Nikita Mitasov <me@ch4og.com>
+# SPDX-License-Identifier: CC0-1.0
+
+#+TITLE: AAGL on Guix
+#+OPTIONS: toc:nil
+
+*** This channel includes packages that run proprietary software.
+*** This is not part of GNU Guix.
+
+* Overview
+
+- Runs [[https://github.com/an-anime-team/][an-anime-team]] launchers on Guix inside an FHS container.
+- Reuses the same mechanism as ~steam~ from [[https://gitlab.com/nonguix/nonguix][nonguix]].
+- The container isolates runtime and gives the launcher a sandboxed HOME.
+- Path mapping inside the container:
+  - =~/home/<user>/= > =~/home/<user>/.local/share/guix-sandbox-home/=
+
+Note: this is a proof of concept and not yet complete.
+
+* Add This Channel
+
+Add the channel to your ~channels.scm~ and pull:
+
+#+BEGIN_SRC scheme
+(channel
+ (name 'aagl)
+ (url "https://codeberg.org/ch4og/aagl-guix.git")
+ (branch "main")
+ (introduction
+    (make-channel-introduction
+     "1055d880e124d69a2aef85cac98a813d442a55fa"
+     (openpgp-fingerprint
+        "7C9E 7EBA 828C 58DF DACE  5BED 4DCC 7AB7 FC75 319B"))))
+#+END_SRC
+
+* Usage
+
+Load the module defining the packages you want, then add them to a manifest or your configuration.
+
+- Module: ~(aagl packages honkers-railway)~ provides:
+    - ~honkers-railway-launcher~
+    - ~honkers-railway-launcher-nvidia~
+
+Example manifest snippet:
+
+#+BEGIN_SRC scheme
+(use-modules (aagl packages honkers-railway))
+
+(packages->manifest (list honkers-railway-launcher))
+#+END_SRC
+
+* Important Notes
+
+- 32-bit support is not available.
+- Upstream binaries are currently used, source builds may be added later.
+- For NVIDIA setups some DXVK versions fail for now. I personally use DXVK 2.6.
+- Hosts file changes are not managed by this channel yet.
+
+Example Guix System configuration snippet to add hosts entries:
+
+#+BEGIN_SRC scheme
+(operating-system
+..
+ (services
+  (append (list (simple-service 'add-extra-hosts
+                                hosts-service-type
+                                (list (host "0.0.0.0"
+                                            "overseauspider.yuanshen.com"
+                                            '("log-upload-os.hoyoverse.com"
+                                              "log-upload-os.mihoyo.com"
+                                              "dump.gamesafe.qq.com"
+                                              "apm-log-upload-os.hoyoverse.com"
+                                              "zzz-log-upload-os.hoyoverse.com"
+                                              "log-upload.mihoyo.com"
+                                              "devlog-upload.mihoyo.com"
+                                              "uspider.yuanshen.com"
+                                              "sg-public-data-api.hoyoverse.com"
+                                              "hkrpg-log-upload-os.hoyoverse.com"
+                                              "public-data-api.mihoyo.com"
+                                              "prd-lender.cdp.internal.unity3d.com"
+                                              "thind-prd-knob.data.ie.unity3d.com"
+                                              "thind-gke-usc.prd.data.corp.unity3d.com"
+                                              "cdp.cloud.unity3d.com"
+                                              "remote-config-proxy-prd.uca.cloud.unity3d.com"
+                                              "pc.crashsight.wetest.net")))))
+          %base-services)))
+#+END_SRC
+
+* Acknowledgments
+
+- [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] — reference implementation for Nix.
+- [[https://gitlab.com/nonguix/nonguix][nonguix]] — Steam/FHS container mechanisms used as a base.
