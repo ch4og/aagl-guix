@@ -13,7 +13,7 @@
 - Reuses the same mechanism as ~steam~ from [[https://gitlab.com/nonguix/nonguix][nonguix]].
 - The container isolates runtime and gives the launcher a sandboxed HOME.
 - Path mapping inside the container:
-  - =~/home/<user>/= > =~/home/<user>/.local/share/guix-sandbox-home/=
+  - =/home/<user>/= > =/home/<user>/.local/share/guix-sandbox-home/=
 
 Note: this is a proof of concept and not yet complete.
 
