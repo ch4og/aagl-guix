@@ -1,0 +1,10 @@
+version = 1
+SPDX-PackageName = "aagl-guix"
+SPDX-PackageSupplier = "Nikita Mitasov <me@ch4og.com>"
+SPDX-PackageDownloadLocation = "https://codeberg.org/ch4og/aagl-guix"
+
+[[annotations]]
+path = ["logo.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Nikita Mitasov <me@ch4og.com>"
+SPDX-License-Identifier = "CC-BY-SA-4.0"

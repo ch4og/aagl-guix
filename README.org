@@ -7,6 +7,12 @@
 *** This channel includes packages that run proprietary software.
 *** This is not part of GNU Guix.
 
+#+HTML: <a href="https://api.reuse.software/info/codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/reuse/compliance/codeberg.org%2Fch4og%2Faagl-guix?logo=open-source-initiative&label=REUSE&logoColor=white&labelColor=24292e"></a>
+#+HTML: <a href="https://codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/badge/source-Codeberg-5993C8?logo=codeberg&logoColor=white&labelColor=24292e"></a>
+#+HTML: <a href="https://gnu.org/software/guile/" rel="nofollow noopener"><img src="https://codeberg.org/luis-felipe/guile-graphics/raw/branch/trunk/badges/gnu-guile-made.svg"></a>
+
+#+HTML: <p align="center"><img src="logo.png" width="35%"/></p>
+
 * Overview
 
 - Runs [[https://github.com/an-anime-team/][an-anime-team]] launchers on Guix inside an FHS container.
