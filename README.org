@@ -35,6 +35,30 @@ Add the channel to your ~channels.scm~ and pull:
 
 * Usage
 
+** Configure the hosts service
+
+*For Guix System users:* Add ~aagl-hosts-service-type~ to your system configuration
+to block telemetry servers. This is required for the launchers to work properly.
+
+*For other distributions:* The launchers will attempt to configure hosts blocking
+automatically. If this fails, follow the official documentation for your specific
+launcher on blocking telemetry.
+
+Guix System configuration example:
+
+#+BEGIN_SRC scheme
+(use-modules (aagl services hosts))
+
+(operating-system
+  ;; ...
+  (services
+   (cons* (service aagl-hosts-service-type)
+          ;; ...
+          %desktop-services)))
+#+END_SRC
+
+** Using the packages
+
 Load the module defining the packages you want, then add them to a manifest or your configuration.
 
 - Module: ~(aagl packages honkers-railway)~ provides:
@@ -54,37 +78,6 @@ Example manifest snippet:
 - 32-bit support is not available.
 - Upstream binaries are currently used, source builds may be added later.
 - For NVIDIA setups some DXVK versions fail for now. I personally use DXVK 2.6.
-- Hosts file changes are not managed by this channel yet.
-
-Example Guix System configuration snippet to add hosts entries:
-
-#+BEGIN_SRC scheme
-(operating-system
-..
- (services
-  (append (list (simple-service 'add-extra-hosts
-                                hosts-service-type
-                                (list (host "0.0.0.0"
-                                            "overseauspider.yuanshen.com"
-                                            '("log-upload-os.hoyoverse.com"
-                                              "log-upload-os.mihoyo.com"
-                                              "dump.gamesafe.qq.com"
-                                              "apm-log-upload-os.hoyoverse.com"
-                                              "zzz-log-upload-os.hoyoverse.com"
-                                              "log-upload.mihoyo.com"
-                                              "devlog-upload.mihoyo.com"
-                                              "uspider.yuanshen.com"
-                                              "sg-public-data-api.hoyoverse.com"
-                                              "hkrpg-log-upload-os.hoyoverse.com"
-                                              "public-data-api.mihoyo.com"
-                                              "prd-lender.cdp.internal.unity3d.com"
-                                              "thind-prd-knob.data.ie.unity3d.com"
-                                              "thind-gke-usc.prd.data.corp.unity3d.com"
-                                              "cdp.cloud.unity3d.com"
-                                              "remote-config-proxy-prd.uca.cloud.unity3d.com"
-                                              "pc.crashsight.wetest.net")))))
-          %base-services)))
-#+END_SRC
 
 * Acknowledgments
 
