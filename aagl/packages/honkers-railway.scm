@@ -19,7 +19,7 @@
 (define honkers-railway-launcher-bin
   (package
    (name "honkers-railway-launcher-bin")
-   (version "1.13.0")
+   (version "1.14.1")
    (source
     (origin
      (method url-fetch)
@@ -28,11 +28,10 @@
        "https://github.com/an-anime-team/the-honkers-railway-launcher"
        "/releases/download/" version "/honkers-railway-launcher"))
      (sha256
-      (base32 "0zy12qb2cmqzbfmx9cyjn0s4a66bcb1xrhrbrgsi2grd12r71h43"))))
+      (base32 "14amvagzvvk837pss784p23z88777b457940n8k14qp1ia23l8dw"))))
    (build-system copy-build-system)
    (arguments
     (list 
-                                        ;#:strip-binaries? #f
      #:phases
      #~(modify-phases %standard-phases
                       (delete 'validate-runpath)
