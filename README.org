@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Nikita Mitasov <me@ch4og.com>
+# SPDX-FileCopyrightText: 2025-2026 Nikita Mitasov <me@ch4og.com>
 # SPDX-License-Identifier: CC0-1.0
 
 #+TITLE: AAGL on Guix
@@ -83,7 +83,6 @@ Example manifest snippet:
 
 - 32-bit support is not available.
 - Upstream binaries are currently used, source builds may be added later.
-- For NVIDIA setups some DXVK versions fail for now. I personally use DXVK 2.6.
 
 * Acknowledgments
 
