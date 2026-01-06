@@ -4,39 +4,36 @@
 #+TITLE: AAGL on Guix
 #+OPTIONS: toc:nil
 
-*** This channel includes packages that run proprietary software.
-*** This is not part of GNU Guix.
+#+HTML: <p><img src="logo.png" width="30%"/></p>
 
 #+HTML: <a href="https://api.reuse.software/info/codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/reuse/compliance/codeberg.org%2Fch4og%2Faagl-guix?logo=open-source-initiative&label=REUSE&logoColor=white&labelColor=24292e"></a>
 #+HTML: <a href="https://codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/badge/source-Codeberg-5993C8?logo=codeberg&logoColor=white&labelColor=24292e"></a>
 #+HTML: <a href="https://gnu.org/software/guile/" rel="nofollow noopener"><img src="https://codeberg.org/luis-felipe/guile-graphics/raw/branch/trunk/badges/gnu-guile-made.svg"></a>
 
-#+HTML: <p align="center"><img src="logo.png" width="35%"/></p>
+** This is *NOT* part of GNU Guix.
+*** This channel includes packages that run proprietary software.
 
 * Overview
 
 - Runs [[https://github.com/an-anime-team/][an-anime-team]] launchers on Guix inside an FHS container.
 - Reuses the same mechanism as ~steam~ from [[https://gitlab.com/nonguix/nonguix][nonguix]].
 - The container isolates runtime and gives the launcher a sandboxed HOME.
-- Path mapping inside the container:
-  - =/home/<user>/= > =/home/<user>/.local/share/guix-sandbox-home/=
-
-Note: this is a proof of concept and not yet complete.
+  - =/home/<user>/= maps to =/home/<user>/.local/share/guix-sandbox-home/=
 
 * Add This Channel
 
 Add the channel to your ~channels.scm~ and pull:
 
 #+BEGIN_SRC scheme
-(channel
- (name 'aagl)
- (url "https://codeberg.org/ch4og/aagl-guix.git")
- (branch "main")
- (introduction
-    (make-channel-introduction
-     "1055d880e124d69a2aef85cac98a813d442a55fa"
-     (openpgp-fingerprint
-        "7C9E 7EBA 828C 58DF DACE  5BED 4DCC 7AB7 FC75 319B"))))
+  (channel
+    (name 'aagl)
+    (url "https://codeberg.org/ch4og/aagl-guix.git")
+    (branch "main")
+    (introduction
+     (make-channel-introduction
+      "1055d880e124d69a2aef85cac98a813d442a55fa"
+      (openpgp-fingerprint
+       "7C9E 7EBA 828C 58DF DACE  5BED 4DCC 7AB7 FC75 319B"))))
 #+END_SRC
 
 * Usage
@@ -46,45 +43,72 @@ Add the channel to your ~channels.scm~ and pull:
 *For Guix System users:* Add ~aagl-hosts-service-type~ to your system configuration
 to block telemetry servers. This is required for the launchers to work properly.
 
-*For other distributions:* The launchers will attempt to configure hosts blocking
+*For other distributions:* Launcher will attempt to configure hosts blocking
 automatically. If this fails, follow the official documentation for your specific
 launcher on blocking telemetry.
 
 Guix System configuration example:
 
 #+BEGIN_SRC scheme
-(use-modules (aagl services hosts))
+  (use-modules (aagl services hosts))
+  ;; or just (use-modules (aagl))
 
-(operating-system
-  ;; ...
-  (services
-   (cons* (service aagl-hosts-service-type)
-          ;; ...
-          %desktop-services)))
+  (operating-system
+    ;; ...
+    (services
+     (cons* (service aagl-hosts-service-type)
+            ;; ...
+            %desktop-services)))
 #+END_SRC
 
 ** Using the packages
 
-Load the module defining the packages you want, then add them to a manifest or your configuration.
+Load the module defining the packages, then add them to a manifest or your configuration.
 
-- Module: ~(aagl packages honkers-railway)~ provides:
-    - ~honkers-railway-launcher~
-    - ~honkers-railway-launcher-nvidia~
+- Module ~(aagl)~ provides all of the packages.
+
+- Module ~(aagl packages honkers-railway)~ provides:
+  - ~honkers-railway-launcher~
+  - ~honkers-railway-launcher-nvidia~
+
+- Module ~(aagl packages anime-game)~ provides:
+  - ~anime-game-launcher~
+  - ~anime-game-launcher-nvidia~
+
+- Module ~(aagl packages sleepy)~ provides:
+  - ~sleepy-launcher~
+  - ~sleepy-launcher-nvidia~
+
+- Module ~(aagl packages honkers)~ provides:
+  - ~honkers-launcher~
+  - ~honkers-launcher-nvidia~
 
 Example manifest snippet:
 
 #+BEGIN_SRC scheme
-(use-modules (aagl packages honkers-railway))
+  (use-modules (aagl packages sleepy)
+               (aagl packages anime-game)
+               (aagl packages honkers-railway)
+               (aagl packages honkers))
+  ;; or just (use-modules (aagl))
 
-(packages->manifest (list honkers-railway-launcher))
+  (packages->manifest
+   (list anime-game-launcher
+         honkers-railway-launcher
+         honkers-launcher
+         sleepy-launcher))
 #+END_SRC
 
 * Important Notes
 
-- 32-bit support is not available.
-- Upstream binaries are currently used, source builds may be added later.
+- Currently there are no =.desktop= files.
+- Anime Games Launcher is currently WIP. 
+- On NVIDIA animated backgrounds currently do not work on Wayland.
+  - Technically speaking it fully works when the driver is passed,
+    but the launcher fails to start frequently. WIP.
+  - If you need animated backgrounds, you can fall back to X11 rendering by starting launcher with =GDK_BACKEND=x11=.
 
 * Acknowledgments
 
-- [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] — reference implementation for Nix.
-- [[https://gitlab.com/nonguix/nonguix][nonguix]] — Steam/FHS container mechanisms used as a base.
+- [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] - reference implementation for Nix
+- [[https://gitlab.com/nonguix/nonguix][nonguix]] - Steam/FHS container mechanisms used as a base.
