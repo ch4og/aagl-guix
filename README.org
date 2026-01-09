@@ -101,7 +101,6 @@ Example manifest snippet:
 
 * Important Notes
 
-- Currently there are no =.desktop= files.
 - Anime Games Launcher is currently WIP. 
 - On NVIDIA animated backgrounds currently do not work on Wayland.
   - Technically speaking it fully works when the driver is passed,

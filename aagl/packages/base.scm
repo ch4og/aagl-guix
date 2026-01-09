@@ -52,7 +52,23 @@
               (lambda _
                 (substitute* "Cargo.toml"
                   (("tag =.*") "version = \"*\"\n")
-                  (("^git = .*") "")))))))
+                  (("^git = .*") ""))))
+            (add-after 'install 'install-desktop-files-and-icons
+              (lambda _
+                (let ((desktop-file (string-append "assets/" #$name ".desktop"))
+                      (desktop-dest (string-append #$output "/share/applications/" #$name ".desktop"))
+                      (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$name ".png"))
+                      (pixmap-dest (string-append #$output "/share/pixmaps/" #$name ".png")))
+                  (mkdir-p (dirname desktop-dest))
+                  (copy-file desktop-file desktop-dest)
+                  (substitute* desktop-dest
+                    (("Exec=AppRun") (string-append "Exec=" #$name))
+                    (("Icon=icon") (string-append "Icon=" #$name)))
+                  (mkdir-p (dirname icon-dest))
+                  (copy-file "assets/images/icon.png" icon-dest)
+                  (mkdir-p (dirname pixmap-dest))
+                  (copy-file "assets/images/icon.png" pixmap-dest))))
+            (delete 'patch-dot-desktop-files))))
       (native-inputs (list pkg-config protobuf coreutils))
       (inputs (cons*
                gdk-pixbuf
