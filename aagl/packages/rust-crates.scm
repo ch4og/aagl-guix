@@ -15,6 +15,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (aagl utils cargo)
   #:export (lookup-cargo-inputs))
 
 ;;;
@@ -40,7 +41,7 @@
              #:skip-build? #t
              #:cargo-package-crates
              ''("anime-game-core")))
-      (inputs (cargo-inputs crate-symbol #:module '(aagl packages rust-crates)))
+      (inputs (aagl-cargo-inputs crate-symbol))
       (home-page github-url)
       (synopsis "Unified library to control different games installations.")
       (description "Unified library to controll different games installations.
@@ -73,7 +74,7 @@ Provides basic instruments for adding support for mechanics like game updating."
                      (substitute* "Cargo.toml"
                        (("tag =.*") "version = \"*\"\n")
                        (("^git = .*") "")))))))
-      (inputs (cargo-inputs crate-symbol #:module '(aagl packages rust-crates)))
+      (inputs (aagl-cargo-inputs crate-symbol))
       (home-page github-url)
       (synopsis "Anime Game Launcher development SDK")
       (description "SDK based on anime-game-core with basic instruments like launcher

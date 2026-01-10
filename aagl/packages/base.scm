@@ -23,13 +23,14 @@
   #:use-module (nonguix utils)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
+  #:use-module (aagl utils cargo)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (make-aagl))
 
 (define* (make-aagl #:key name version hash (repo name))
   (let* ((crate-symbol (string->symbol name))
-         (cargo-deps   (cargo-inputs crate-symbol #:module '(aagl packages rust-crates)))
-         (github-url (string-append "https://github.com/an-anime-team/" repo)))
+         (cargo-deps   (aagl-cargo-inputs crate-symbol))
+         (github-url   (string-append "https://github.com/an-anime-team/" repo)))
     (package
       (name name)
       (version version)
