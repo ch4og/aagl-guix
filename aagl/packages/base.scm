@@ -46,7 +46,7 @@
       (arguments
        (list
         #:install-source? #f
-        #:rust rust-1.88
+        #:rust rust-1.92
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'use-guix-vendored-dependencies
