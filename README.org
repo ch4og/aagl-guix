@@ -83,17 +83,23 @@ Load the module defining the packages, then add them to a manifest or your confi
   - ~honkers-launcher~
   - ~honkers-launcher-nvidia~
 
+- Module ~(aagl packages anime-games)~ provides:
+  - ~anime-games-launcher~
+  - ~anime-games-launcher-nvidia~
+
 Example manifest snippet:
 
 #+BEGIN_SRC scheme
   (use-modules (aagl packages sleepy)
                (aagl packages anime-game)
+               (aagl packages anime-games)
                (aagl packages honkers-railway)
                (aagl packages honkers))
   ;; or just (use-modules (aagl))
 
   (packages->manifest
    (list anime-game-launcher
+         anime-games-launcher
          honkers-railway-launcher
          honkers-launcher
          sleepy-launcher))
@@ -101,8 +107,6 @@ Example manifest snippet:
 
 * Important Notes
 
-- Anime Games Launcher requires rust-1.92 which is not yet avaliable on Guix.
-  After Guix adds rust-1.92 [[https://codeberg.org/ch4og/aagl-guix/pulls/1][PR]] with addition will be merged
 - On NVIDIA animated backgrounds currently do not work on Wayland.
   - Technically speaking it fully works when the driver is passed,
     but the launcher fails to start frequently. WIP.

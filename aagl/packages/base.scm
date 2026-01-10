@@ -30,16 +30,21 @@
 (define* (make-aagl #:key name version hash (repo name))
   (let* ((crate-symbol (string->symbol name))
          (cargo-deps   (aagl-cargo-inputs crate-symbol))
-         (github-url   (string-append "https://github.com/an-anime-team/" repo)))
+         (github-url   (string-append "https://github.com/an-anime-team/" repo))
+         (full-version version)
+         (stripped-version (if (and (>= (string-length version) 1)
+                                 (string-prefix? "v" version))
+                            (substring version 1)
+                            version)))
     (package
       (name name)
-      (version version)
+      (version stripped-version)
       (source 
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url github-url)
-                (commit version)))
+                (commit full-version)))
          (file-name (git-file-name repo version))
          (sha256 (base32 hash))))
       (build-system cargo-build-system)
