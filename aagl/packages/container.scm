@@ -24,6 +24,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages sdl)
   #:use-module (nonguix multiarch-container)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl services hosts)
@@ -89,7 +90,9 @@
             ("libadwaita" ,libadwaita)
             ("mesa" ,mesa)
             ("pulseaudio" ,pulseaudio)
-            ("wayland" ,wayland))))
+            ("wayland" ,wayland)
+
+            ("sdl2" ,sdl2))))
 
 (define %aagl-warning-shown? #f)
 
