@@ -32,23 +32,21 @@
 
 (define (aagl-container-for pkg name driver)
   (nonguix-container
-    (name name)
-    (wrap-package pkg)
-    (run (string-append "/bin/" name))
-    (packages
-     (replace-mesa %aagl-runtime-libs))
-    (union32 (fhs-union '()
-                        #:name "aagl-fhs-union-32"
-                        #:system "i686-linux"))
-    (preserved-env (cons*
-                    "GDK_BACKEND"
-                    ;; See https://gitlab.com/nonguix/nonguix/-/merge_requests/807
-                    "GST_PLUGIN_SYSTEM_PATH"
-                    "GDK_PIXBUF_MODULE_FILE"
-                    %nvidia-environment-variable-regexps))
-    (link-files '("share"))
-    (description (string-append (package-description pkg)
-                                " that is running inside an FHS container"))))
+   (name name)
+   (wrap-package pkg)
+   (run (string-append "/bin/" name))
+   (packages (replace-mesa %aagl-runtime-libs))
+   (union32
+    (fhs-union '()
+               #:name "aagl-fhs-union-32"
+               #:system "i686-linux"))
+   (preserved-env (cons* "GDK_BACKEND"            ;; Allow overriding
+                         "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
+                         %nvidia-environment-variable-regexps))
+   (link-files '("share"))
+   (description
+    (string-append (package-description pkg)
+                   " in a container."))))
 
 (define %aagl-runtime-libs
   (append fhs-min-libs
@@ -82,7 +80,7 @@
             ("adwaita-icon-theme" ,adwaita-icon-theme)
             ("hicolor-icon-theme" ,hicolor-icon-theme)
             ("font-adwaita" ,font-adwaita)
-            
+
             ("alsa-lib" ,alsa-lib)
             ("alsa-plugins:pulseaudio" ,alsa-plugins "pulseaudio")
             ("bzip2" ,bzip2)
@@ -94,21 +92,28 @@
 
             ("sdl2" ,sdl2))))
 
-(define %aagl-warning-shown? #f)
+(define show-aagl-warning
+  (let ((shown? #f))
+    (lambda ()
+      (unless (or shown?
+                  (aagl-hosts-configured?))
+        (warning (G_ "AAGL launchers require blocking hosts!~%"))
+        (info (G_ "More details: https://codeberg.org/ch4og/aagl-guix~%"))
+        (set! shown? #t)))))
 
-(define (show-aagl-warning)
-  (unless (or %aagl-warning-shown?
-              (aagl-hosts-configured?))
-    (warning (G_ "AAGL launchers require blocking hosts!~%"))
-    (info (G_ "See readme for more details:~%"))
-    (info (G_ "https://codeberg.org/ch4og/aagl-guix~%"))
-    (set! %aagl-warning-shown? #t)))
-
-(define* (aagl-fhs-for launcher #:key (name (package-name launcher)) (driver mesa))
+(define* (aagl-fhs-for launcher
+                       #:key
+                       (driver mesa)
+                       (name (package-name launcher)))
   (show-aagl-warning)
-  (let ((container-pkg (nonguix-container->package (aagl-container-for launcher name driver))))
+  ;; Here we have a small wrapper with environment variables.
+  ;; After fixes to nonguix this should just be container-pkg value.
+  (let* ((container (aagl-container-for launcher name driver))
+         (container-pkg (nonguix-container->package container)))
     (package
       (inherit container-pkg)
+      (inputs (append (package-inputs container-pkg)
+                      `(("bash-minimal" ,bash-minimal))))
       (arguments
        (list
         #:modules '((guix build utils))
@@ -116,14 +121,11 @@
         #~(begin
             (use-modules (guix build utils))
             (let* ((out (assoc-ref %outputs "out"))
-                   (bin-dir (string-append out "/bin"))
-                   (bash-bin (string-append #$bash "/bin"))
-                   (source-bin (string-append #$container-pkg "/bin/" #$name))
-                   (target-bin (string-append bin-dir "/" #$name)))
+                   (orig-bin (string-append out "/bin/" #$name))
+                   (bash (assoc-ref %build-inputs "bash-minimal"))
+                   (bash-bin (string-append bash "/bin/bash"))
+                   (pixbuf-cache "/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
               (copy-recursively #$container-pkg out)
-              (setenv "PATH" (string-append #$coreutils "/bin:" bash-bin))
-              (wrap-program target-bin
-                #:sh (string-append bash-bin "/bash")
-                ;; See https://gitlab.com/nonguix/nonguix/-/merge_requests/807
-                '("GDK_PIXBUF_MODULE_FILE" = ("/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
-                '("GST_PLUGIN_SYSTEM_PATH" = ("/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))))))))))
+              (wrap-program orig-bin
+                #:sh bash-bin
+                `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))))))))))
