@@ -42,6 +42,7 @@
                #:system "i686-linux"))
    (preserved-env (cons* "GDK_BACKEND"            ;; Allow overriding
                          "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
+                         "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
                          %nvidia-environment-variable-regexps))
    (link-files '("share"))
    (description
@@ -124,8 +125,10 @@
                    (orig-bin (string-append out "/bin/" #$name))
                    (bash (assoc-ref %build-inputs "bash-minimal"))
                    (bash-bin (string-append bash "/bin/bash"))
-                   (pixbuf-cache "/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache"))
+                   (pixbuf-cache "/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache")
+                   (gst-paths "/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))
               (copy-recursively #$container-pkg out)
               (wrap-program orig-bin
                 #:sh bash-bin
-                `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))))))))))
+                `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))
+                `("GST_PLUGIN_SYSTEM_PATH" = (,gst-paths))))))))))

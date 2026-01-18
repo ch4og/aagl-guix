@@ -101,9 +101,6 @@ Example manifest snippet:
 
 * Important Notes
 
-- Ensure your nonguix pinned commit is at least [[https://gitlab.com/nonguix/nonguix/-/commit/bdfb94ab580415925e0fe5ca41c66bc5744c2e58][=bdfb94ab= (2026-01-14 20:48:51 UTC)]].
-  - Without this commit, cutscenes that depend on GStreamer will cause the game to crash.
-
 - Anime Games Launcher requires rust-1.92, which is not yet avaliable on Guix.
   - Once Guix adds rust-1.92, [[https://codeberg.org/ch4og/aagl-guix/pulls/1][PR]] with addition will be merged.
 
