@@ -32,66 +32,72 @@
 
 (define (aagl-container-for pkg name driver)
   (nonguix-container
-   (name name)
-   (wrap-package pkg)
-   (run (string-append "/bin/" name))
-   (packages (replace-mesa %aagl-runtime-libs))
-   (union32
-    (fhs-union '()
-               #:name "aagl-fhs-union-32"
-               #:system "i686-linux"))
-   (preserved-env (cons* "GDK_BACKEND"            ;; Allow overriding
-                         "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
-                         "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
-                         %nvidia-environment-variable-regexps))
-   (link-files '("share"))
-   (description
-    (string-append (package-description pkg)
-                   " in a container."))))
+    (name name)
+    (wrap-package pkg)
+    (run (string-append "/bin/" name))
+
+    ;; TODO: replace mesa package with nvda. Currently this breaks nvidia.
+    ;; However, once gnome-team gets merged, NOT doing so will break it.
+    (packages (if (eq? driver mesa)
+                  %aagl-runtime-libs
+                  (replace-mesa %aagl-runtime-libs
+                                #:driver driver)))
+    (union32
+     (fhs-union '()
+                #:name "aagl-fhs-union-32"
+                #:system "i686-linux"))
+    (preserved-env `("GDK_BACKEND"            ;; Allow overriding
+                     "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
+                     "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
+                     ,@%nvidia-environment-variable-regexps))
+    (link-files '("share"))
+    (description
+     (string-append (package-description pkg)
+                    " in a container."))))
 
 (define %aagl-runtime-libs
-  (append fhs-min-libs
-          `(("bash" ,bash)
-            ("coreutils" ,coreutils)
-            ("file" ,file)
-            ("xz" ,xz)
-            ("zenity" ,zenity)
+  `(,@fhs-min-libs
+    ("bash" ,bash)
+    ("coreutils" ,coreutils)
+    ("file" ,file)
+    ("xz" ,xz)
+    ("zenity" ,zenity)
 
-            ("7zip" ,7zip)
-            ("cabextract" ,cabextract)
-            ("git" ,git)
-            ("gnutls" ,gnutls)
-            ("gst-libav" ,gst-libav)
-            ("gst-plugins-bad" ,gst-plugins-bad)
-            ("gst-plugins-good" ,gst-plugins-good)
-            ("imagemagick" ,imagemagick)
-            ("libunwind" ,libunwind)
-            ("libwebp" ,libwebp)
-            ("mangohud" ,mangohud)
-            ("nss-certs" ,nss-certs)
-            ("nss" ,nss)
-            ("unzip" ,unzip)
-            ("xdelta" ,xdelta)
+    ("7zip" ,7zip)
+    ("cabextract" ,cabextract)
+    ("git" ,git)
+    ("gnutls" ,gnutls)
+    ("gst-libav" ,gst-libav)
+    ("gst-plugins-bad" ,gst-plugins-bad)
+    ("gst-plugins-good" ,gst-plugins-good)
+    ("imagemagick" ,imagemagick)
+    ("libunwind" ,libunwind)
+    ("libwebp" ,libwebp)
+    ("mangohud" ,mangohud)
+    ("nss-certs" ,nss-certs)
+    ("nss" ,nss)
+    ("unzip" ,unzip)
+    ("xdelta" ,xdelta)
 
-            ("font-google-noto-emoji" ,font-google-noto-emoji)
-            ("font-google-noto-sans-cjk" ,font-google-noto-sans-cjk)
-            ("font-google-noto-serif-cjk" ,font-google-noto-serif-cjk)
-            ("font-dejavu" ,font-dejavu)
+    ("font-google-noto-emoji" ,font-google-noto-emoji)
+    ("font-google-noto-sans-cjk" ,font-google-noto-sans-cjk)
+    ("font-google-noto-serif-cjk" ,font-google-noto-serif-cjk)
+    ("font-dejavu" ,font-dejavu)
 
-            ("adwaita-icon-theme" ,adwaita-icon-theme)
-            ("hicolor-icon-theme" ,hicolor-icon-theme)
-            ("font-adwaita" ,font-adwaita)
+    ("adwaita-icon-theme" ,adwaita-icon-theme)
+    ("hicolor-icon-theme" ,hicolor-icon-theme)
+    ("font-adwaita" ,font-adwaita)
 
-            ("alsa-lib" ,alsa-lib)
-            ("alsa-plugins:pulseaudio" ,alsa-plugins "pulseaudio")
-            ("bzip2" ,bzip2)
-            ("gcc:lib" ,gcc "lib")
-            ("libadwaita" ,libadwaita)
-            ("mesa" ,mesa)
-            ("pulseaudio" ,pulseaudio)
-            ("wayland" ,wayland)
+    ("alsa-lib" ,alsa-lib)
+    ("alsa-plugins:pulseaudio" ,alsa-plugins "pulseaudio")
+    ("bzip2" ,bzip2)
+    ("gcc:lib" ,gcc "lib")
+    ("libadwaita" ,libadwaita)
+    ("mesa" ,mesa)
+    ("pulseaudio" ,pulseaudio)
+    ("wayland" ,wayland)
 
-            ("sdl2" ,sdl2))))
+    ("sdl2" ,sdl2)))
 
 (define show-aagl-warning
   (let ((shown? #f))
@@ -107,14 +113,14 @@
                        (driver mesa)
                        (name (package-name launcher)))
   (show-aagl-warning)
-  ;; Here we have a small wrapper with environment variables.
-  ;; After fixes to nonguix this should just be container-pkg value.
+
+  ;; TODO: After fixes to nonguix this should just be container-pkg value.
   (let* ((container (aagl-container-for launcher name driver))
          (container-pkg (nonguix-container->package container)))
     (package
       (inherit container-pkg)
-      (inputs (append (package-inputs container-pkg)
-                      `(("bash-minimal" ,bash-minimal))))
+      (inputs `(,@(package-inputs container-pkg)
+                ("bash-minimal" ,bash-minimal)))
       (arguments
        (list
         #:modules '((guix build utils))
