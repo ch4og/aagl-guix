@@ -10,17 +10,18 @@
 #+HTML: <a href="https://codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/badge/source-Codeberg-5993C8?logo=codeberg&logoColor=white&labelColor=24292e"></a>
 #+HTML: <a href="https://gnu.org/software/guile/" rel="nofollow noopener"><img src="https://codeberg.org/luis-felipe/guile-graphics/raw/branch/trunk/badges/gnu-guile-made.svg"></a>
 
-** This is *NOT* part of GNU Guix.
+** Disclaimer
+
+*** This project is *NOT* part of GNU Guix.
 *** This channel includes packages that run proprietary software.
 
 * Overview
 
-- Runs [[https://github.com/an-anime-team/][an-anime-team]] launchers on Guix inside an FHS container.
-- Reuses the same mechanism as ~steam~ from [[https://gitlab.com/nonguix/nonguix][nonguix]].
-- The container isolates runtime and gives the launcher a sandboxed HOME.
-  - =/home/<user>/= maps to =/home/<user>/.local/share/guix-sandbox-home/=
+AAGL on Guix provides Guix packages for [[https://github.com/an-anime-team/][an-anime-team]] launchers using an FHS-compatible container, similar to how Steam is packaged in [[https://gitlab.com/nonguix/nonguix][nonguix]].
 
-* Add This Channel
+* Usage
+
+** Add This Channel
 
 Add the channel to your ~channels.scm~ and pull:
 
@@ -36,12 +37,11 @@ Add the channel to your ~channels.scm~ and pull:
        "7C9E 7EBA 828C 58DF DACE  5BED 4DCC 7AB7 FC75 319B"))))
 #+END_SRC
 
-* Usage
-
 ** Configure the hosts service
 
 *For Guix System users:* Add ~aagl-hosts-service-type~ to your system configuration
 to block telemetry servers. This is required for the launchers to work properly.
+First time you will still get a warning that hosts blocking is required.
 
 *For other distributions:* Launcher will attempt to configure hosts blocking
 automatically. If this fails, follow the official documentation for your specific
@@ -63,7 +63,7 @@ Guix System configuration example:
 
 ** Using the packages
 
-Load the module defining the packages, then add them to a manifest or your configuration.
+Load the module defining the packages, then add them to a manifest/configuration or just install.
 
 - Module ~(aagl)~ provides all of the packages.
 
@@ -83,31 +83,20 @@ Load the module defining the packages, then add them to a manifest or your confi
   - ~honkers-launcher~
   - ~honkers-launcher-nvidia~
 
-Example manifest snippet:
+* Sandboxing behavior
 
-#+BEGIN_SRC scheme
-  (use-modules (aagl packages sleepy)
-               (aagl packages anime-game)
-               (aagl packages honkers-railway)
-               (aagl packages honkers))
-  ;; or just (use-modules (aagl))
+Launchers run inside an isolated FHS container. The container uses a *sandboxed HOME* directory:
 
-  (packages->manifest
-   (list anime-game-launcher
-         honkers-railway-launcher
-         honkers-launcher
-         sleepy-launcher))
-#+END_SRC
+=/home/<user>/.local/share/guix-sandbox-home/=
 
-* Important Notes
+If you need to share a path to container, you can add it to =GUIX_SANDBOX_EXTRA_SHARES= environment variable.
 
-- Anime Games Launcher requires rust-1.92, which is not yet avaliable on Guix.
-  - Once Guix adds rust-1.92, [[https://codeberg.org/ch4og/aagl-guix/pulls/1][PR]] with addition will be merged.
+* Important Note
 
-- On NVIDIA animated backgrounds currently do not work on Wayland.
-  - Technically feature is fully working when the driver is passed,
-    but the launcher fails to start frequently. WIP.
-  - If you need animated backgrounds, you can fall back to X11 rendering by starting launcher with =GDK_BACKEND=x11=.
+- On Wayland, there are currently several issues, including broken animated backgrounds on NVIDIA and incorrect UI element sizing on all GPUs.
+  - These are caused by a bug in the current GTK package in Guix.
+  - The issues do not exist in =gnome-team= branch and will be resolved once the changes are merged.
+  - If you need animated backgrounds or correct UI sizing right now, you can fall back to X11 by launching the app with =GDK_BACKEND=x11=.
 
 * Acknowledgments
 
