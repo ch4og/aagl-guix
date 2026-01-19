@@ -28,13 +28,12 @@
   #:export (make-aagl))
 
 (define* (make-aagl #:key name version hash (repo name))
-  (let* ((crate-symbol (string->symbol name))
-         (cargo-deps   (aagl-cargo-inputs crate-symbol))
-         (github-url   (string-append "https://github.com/an-anime-team/" repo)))
+  (let* ((cargo-deps (aagl-cargo-inputs (string->symbol name)))
+         (github-url (string-append "https://github.com/an-anime-team/" repo)))
     (package
       (name name)
       (version version)
-      (source 
+      (source
        (origin
          (method git-fetch)
          (uri (git-reference
