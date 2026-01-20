@@ -2,6 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages container)
+  #:use-module (guix build glib-or-gtk-build-system)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix ui)
@@ -108,6 +109,12 @@
         (info (G_ "More details: https://codeberg.org/ch4og/aagl-guix~%"))
         (set! shown? #t)))))
 
+(define %gdk-pixbuf-loaders-cache-file-64
+  (let ((real %gdk-pixbuf-loaders-cache-file))
+    (if (string-prefix? "lib/" real)
+        (string-append "lib64/" (substring real 4))
+        real)))
+
 (define* (aagl-fhs-for launcher
                        #:key
                        (driver mesa)
@@ -127,12 +134,13 @@
         #:builder
         #~(begin
             (use-modules (guix build utils))
-            (let* ((out (assoc-ref %outputs "out"))
-                   (orig-bin (string-append out "/bin/" #$name))
-                   (bash (assoc-ref %build-inputs "bash-minimal"))
-                   (bash-bin (string-append bash "/bin/bash"))
-                   (pixbuf-cache "/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache")
-                   (gst-paths "/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))
+            (let* ((out          (assoc-ref %outputs "out"))
+                   (orig-bin     (string-append out "/bin/" #$name))
+                   (bash         (assoc-ref %build-inputs "bash-minimal"))
+                   (bash-bin     (string-append bash "/bin/bash"))
+                   (pixbuf-cache (string-append "/"
+                                                #$%gdk-pixbuf-loaders-cache-file-64))
+                   (gst-paths    "/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))
               (copy-recursively #$container-pkg out)
               (wrap-program orig-bin
                 #:sh bash-bin
