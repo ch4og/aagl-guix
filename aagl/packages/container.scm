@@ -36,12 +36,12 @@
     (wrap-package pkg)
     (run (string-append "/bin/" name))
 
-    ;; TODO: replace mesa package with nvda. Currently this breaks nvidia.
-    ;; However, once gnome-team gets merged, NOT doing so will break it.
     (packages (if (eq? driver mesa)
                   %aagl-runtime-libs
-                  (replace-mesa %aagl-runtime-libs
-                                #:driver driver)))
+                  (modify-inputs
+                      (replace-mesa %aagl-runtime-libs
+                                    #:driver driver)
+                    (replace "mesa" driver))))
     (union32
      (fhs-union '()
                 #:name "aagl-fhs-union-32"

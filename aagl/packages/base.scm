@@ -2,6 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages base)
+  #:use-module ((guix build-system glib-or-gtk) #:prefix glib-or-gtk-bs:)
   #:use-module (guix build-system cargo)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -46,35 +47,54 @@
        (list
         #:install-source? #f
         #:rust rust-1.88
+        #:modules
+        `(,@glib-or-gtk-bs:%glib-or-gtk-build-system-modules
+          ,@%cargo-build-system-modules)
+        #:imported-modules
+        `(,@glib-or-gtk-bs:%glib-or-gtk-build-system-modules
+          ,@%cargo-build-system-modules)
         #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'use-guix-vendored-dependencies
-              (lambda _
-                (substitute* "Cargo.toml"
-                  (("tag =.*") "version = \"*\"\n")
-                  (("^git = .*") ""))))
-            (add-after 'install 'install-desktop-files-and-icons
-              (lambda _
-                (let ((desktop-file (string-append "assets/" #$name ".desktop"))
-                      (desktop-dest (string-append #$output "/share/applications/" #$name ".desktop"))
-                      (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$name ".png"))
-                      (pixmap-dest (string-append #$output "/share/pixmaps/" #$name ".png")))
-                  (mkdir-p (dirname desktop-dest))
-                  (copy-file desktop-file desktop-dest)
-                  (substitute* desktop-dest
-                    (("Exec=AppRun") (string-append "Exec=" #$name))
-                    (("Icon=icon") (string-append "Icon=" #$name)))
-                  (mkdir-p (dirname icon-dest))
-                  (copy-file "assets/images/icon.png" icon-dest)
-                  (mkdir-p (dirname pixmap-dest))
-                  (copy-file "assets/images/icon.png" pixmap-dest))))
-            (delete 'patch-dot-desktop-files))))
+        #~(begin
+            (use-modules ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+                         (guix build utils))
+            (let ((gen-gdk-pixbuf  (assoc-ref glib-or-gtk:%standard-phases 'generate-gdk-pixbuf-loaders-cache-file))
+                  (compile-schemas (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+                  (wrap            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
+              (modify-phases %standard-phases
+                (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file gen-gdk-pixbuf)
+
+                (add-after 'unpack 'use-guix-vendored-dependencies
+                  (lambda _
+                    (substitute* "Cargo.toml"
+                      (("tag =.*") "version = \"*\"\n")
+                      (("^git = .*") ""))))
+
+                (add-after 'install 'glib-or-gtk-compile-schemas compile-schemas)
+                (add-after 'install 'glib-or-gtk-wrap wrap)
+
+                (add-after 'install 'install-desktop-files-and-icons
+                  (lambda _
+                    (let ((desktop-file (string-append "assets/" #$name ".desktop"))
+                          (desktop-dest (string-append #$output "/share/applications/" #$name ".desktop"))
+                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$name ".png"))
+                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$name ".png")))
+                      (mkdir-p (dirname desktop-dest))
+                      (copy-file desktop-file desktop-dest)
+                      (substitute* desktop-dest
+                        (("Exec=AppRun") (string-append "Exec=" #$name))
+                        (("Icon=icon") (string-append "Icon=" #$name)))
+                      (mkdir-p (dirname icon-dest))
+                      (copy-file "assets/images/icon.png" icon-dest)
+                      (mkdir-p (dirname pixmap-dest))
+                      (copy-file "assets/images/icon.png" pixmap-dest))))
+                (delete 'patch-dot-desktop-files))))))
       (native-inputs (list pkg-config protobuf coreutils))
       (inputs (cons*
                gdk-pixbuf
                git-minimal
                glib
                graphene
+               gsettings-desktop-schemas
                gtk
                libadwaita
                pango

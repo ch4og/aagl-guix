@@ -91,13 +91,6 @@ Launchers run inside an isolated FHS container. The container uses a *sandboxed 
 
 If you need to share a path to container, you can add it to =GUIX_SANDBOX_EXTRA_SHARES= environment variable.
 
-* Important Note
-
-- On Wayland, there are currently several issues, including broken animated backgrounds on NVIDIA and incorrect UI element sizing on all GPUs.
-  - These are caused by a bug in the current GTK package in Guix.
-  - The issues do not exist in =gnome-team= branch and will be resolved once the changes are merged.
-  - If you need animated backgrounds or correct UI sizing right now, you can fall back to X11 by launching the app with =GDK_BACKEND=x11=.
-
 * Acknowledgments
 
 - [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] - reference implementation for Nix
