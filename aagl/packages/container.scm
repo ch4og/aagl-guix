@@ -33,28 +33,28 @@
 
 (define (aagl-container-for pkg name driver)
   (nonguix-container
-    (name name)
-    (wrap-package pkg)
-    (run (string-append "/bin/" name))
+   (name name)
+   (wrap-package pkg)
+   (run (string-append "/bin/" name))
 
-    (packages (if (eq? driver mesa)
-                  %aagl-runtime-libs
-                  (modify-inputs
-                      (replace-mesa %aagl-runtime-libs
-                                    #:driver driver)
-                    (replace "mesa" driver))))
-    (union32
-     (fhs-union '()
-                #:name "aagl-fhs-union-32"
-                #:system "i686-linux"))
-    (preserved-env `("GDK_BACKEND"            ;; Allow overriding
-                     "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
-                     "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
-                     ,@%nvidia-environment-variable-regexps))
-    (link-files '("share"))
-    (description
-     (string-append (package-description pkg)
-                    " in a container."))))
+   (packages (if (eq? driver mesa)
+                 %aagl-runtime-libs
+                 (modify-inputs
+                     (replace-mesa %aagl-runtime-libs
+                                   #:driver driver)
+                   (replace "mesa" driver))))
+   (union32
+    (fhs-union '()
+               #:name "aagl-fhs-union-32"
+               #:system "i686-linux"))
+   (preserved-env `("GDK_BACKEND"            ;; Allow overriding
+                    "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
+                    "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
+                    ,@%nvidia-environment-variable-regexps))
+   (link-files '("share"))
+   (description
+    (string-append (package-description pkg)
+                   " in a container."))))
 
 (define %aagl-runtime-libs
   `(,@fhs-min-libs
