@@ -76,8 +76,8 @@
                   (lambda _
                     (let ((desktop-file (string-append "assets/" #$name ".desktop"))
                           (desktop-dest (string-append #$output "/share/applications/" #$name ".desktop"))
-                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$name ".png"))
-                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$name ".png")))
+                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$repo ".png"))
+                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$repo ".png")))
                       (mkdir-p (dirname desktop-dest))
                       (copy-file desktop-file desktop-dest)
                       (substitute* desktop-dest
