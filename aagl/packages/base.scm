@@ -82,7 +82,8 @@
                       (copy-file desktop-file desktop-dest)
                       (substitute* desktop-dest
                         (("Exec=AppRun") (string-append "Exec=" #$name))
-                        (("Icon=icon") (string-append "Icon=" #$name)))
+                        (("Icon=icon") (string-append "Icon=" #$name "\n"
+                                                      "StartupWMClass=moe.launcher." #$repo)))
                       (mkdir-p (dirname icon-dest))
                       (copy-file "assets/images/icon.png" icon-dest)
                       (mkdir-p (dirname pixmap-dest))
