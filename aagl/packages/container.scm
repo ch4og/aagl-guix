@@ -5,7 +5,6 @@
   #:use-module (guix build glib-or-gtk-build-system)
   #:use-module (guix packages)
   #:use-module (guix gexp)
-  #:use-module (guix ui)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -29,6 +28,9 @@
   #:use-module (nonguix multiarch-container)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl services hosts)
+  #:use-module (aagl utils name)
+  #:use-module (aagl utils nvidia)
+  #:use-module (aagl utils warning)
   #:export (aagl-fhs-for))
 
 (define (aagl-container-for pkg name driver)
@@ -37,12 +39,7 @@
    (wrap-package pkg)
    (run (string-append "/bin/" name))
 
-   (packages (if (eq? driver mesa)
-                 %aagl-runtime-libs
-                 (modify-inputs
-                     (replace-mesa %aagl-runtime-libs
-                                   #:driver driver)
-                   (replace "mesa" driver))))
+   (packages (smart-runtime-replace-mesa %aagl-runtime-libs driver))
    (union32
     (fhs-union '()
                #:name "aagl-fhs-union-32"
@@ -100,15 +97,6 @@
 
     ("sdl2" ,sdl2)))
 
-(define show-aagl-warning
-  (let ((shown? #f))
-    (lambda ()
-      (unless (or shown?
-                  (aagl-hosts-configured?))
-        (warning (G_ "AAGL launchers require blocking hosts!~%"))
-        (info (G_ "More details: https://codeberg.org/ch4og/aagl-guix~%"))
-        (set! shown? #t)))))
-
 (define %gdk-pixbuf-loaders-cache-file-64
   (let ((real %gdk-pixbuf-loaders-cache-file))
     (if (string-prefix? "lib/" real)
@@ -121,11 +109,7 @@
   (show-aagl-warning)
 
   ;; TODO: After fixes to nonguix this should just be container-pkg value.
-  (let* ((has-prefix? (or-map (lambda (p) (string-prefix? p (package-name launcher)))
-                              '("the-" "an-")))
-         (name (if has-prefix?
-                   (string-join (cdr (string-split (package-name launcher) #\-)) "-")
-                   (package-name launcher)))
+  (let* ((name (package-basename (package-name launcher)))
          (container (aagl-container-for launcher name driver))
          (container-pkg (nonguix-container->package container)))
     (package

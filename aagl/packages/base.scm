@@ -25,16 +25,13 @@
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl utils cargo)
+  #:use-module (aagl utils name)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (make-aagl))
 
 (define* (make-aagl #:key name version hash)
-  (let* ((has-prefix? (or-map (lambda (p) (string-prefix? p name))
-                              '("the-" "an-")))
-         (bin-name (if has-prefix?
-                       (string-join (cdr (string-split name #\-)) "-")
-                       name))
-         (appid (string-append "moe.launcher." name))
+  (let* ((bin-name   (package-basename name))
+         (appid      (string-append "moe.launcher." name))
          (cargo-deps (aagl-cargo-inputs (string->symbol name)))
          (github-url (string-append "https://github.com/an-anime-team/" name)))
     (package
@@ -84,9 +81,9 @@
                   (lambda _
                     (let ((desktop-file (string-append "assets/" #$bin-name ".desktop"))
                           (desktop-dest (string-append #$output "/share/applications/" #$bin-name ".desktop"))
-                          (icon-file "assets/images/icon.png")
-                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/" #$appid ".png"))
-                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$bin-name ".png")))
+                          (icon-file    "assets/images/icon.png")
+                          (icon-dest    (string-append #$output "/share/icons/hicolor/512x512/apps/" #$appid ".png"))
+                          (pixmap-dest  (string-append #$output "/share/pixmaps/" #$bin-name ".png")))
                       (mkdir-p (dirname desktop-dest))
                       (copy-file desktop-file desktop-dest)
                       (substitute* desktop-dest
