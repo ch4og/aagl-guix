@@ -3,7 +3,6 @@
 
 (define-module (aagl packages sleepy)
   #:use-module (guix packages)
-  #:use-module (nonguix utils)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
@@ -18,6 +17,4 @@
   (aagl-fhs-for sleepy-launcher-real))
 
 (define-public sleepy-launcher-nvidia
-  (package-with-alias
-   "sleepy-launcher-nvidia"
-   (aagl-fhs-for sleepy-launcher-real #:driver nvda)))
+  (aagl-fhs-for sleepy-launcher-real #:driver nvda))

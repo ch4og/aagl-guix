@@ -26,6 +26,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages sdl)
   #:use-module (nonguix multiarch-container)
+  #:use-module (nonguix utils)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl services hosts)
   #:use-module (aagl utils name)
@@ -103,34 +104,35 @@
         (string-append "lib64/" (substring real 4))
         real)))
 
-(define* (aagl-fhs-for launcher
-                       #:key
-                       (driver mesa))
+(define* (aagl-fhs-for launcher #:key (driver mesa))
   (show-aagl-warning)
 
-  ;; TODO: After fixes to nonguix this should just be container-pkg value.
-  (let* ((name (package-basename (package-name launcher)))
+  (let* ((pkg-name (package-name launcher))
+         (name (package-basename pkg-name))
          (container (aagl-container-for launcher name driver))
          (container-pkg (nonguix-container->package container)))
-    (package
-      (inherit container-pkg)
-      (inputs `(,@(package-inputs container-pkg)
-                ("bash-minimal" ,bash-minimal)))
-      (arguments
-       (list
-        #:modules '((guix build utils))
-        #:builder
-        #~(begin
-            (use-modules (guix build utils))
-            (let* ((out          (assoc-ref %outputs "out"))
-                   (orig-bin     (string-append out "/bin/" #$name))
-                   (bash         (assoc-ref %build-inputs "bash-minimal"))
-                   (bash-bin     (string-append bash "/bin/bash"))
-                   (pixbuf-cache (string-append "/"
-                                                #$%gdk-pixbuf-loaders-cache-file-64))
-                   (gst-paths    "/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))
-              (copy-recursively #$container-pkg out)
-              (wrap-program orig-bin
-                #:sh bash-bin
-                `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))
-                `("GST_PLUGIN_SYSTEM_PATH" = (,gst-paths))))))))))
+    (package-with-alias
+     (generate-package-name pkg-name driver)
+     ;; TODO: After fixes to nonguix this should just be container-pkg value.
+     (package
+       (inherit container-pkg)
+       (inputs `(,@(package-inputs container-pkg)
+                 ("bash-minimal" ,bash-minimal)))
+       (arguments
+        (list
+         #:modules '((guix build utils))
+         #:builder
+         #~(begin
+             (use-modules (guix build utils))
+             (let* ((out          (assoc-ref %outputs "out"))
+                    (orig-bin     (string-append out "/bin/" #$name))
+                    (bash         (assoc-ref %build-inputs "bash-minimal"))
+                    (bash-bin     (string-append bash "/bin/bash"))
+                    (pixbuf-cache (string-append "/"
+                                                 #$%gdk-pixbuf-loaders-cache-file-64))
+                    (gst-paths    "/lib64/gstreamer-1.0:/lib/gstreamer-1.0"))
+               (copy-recursively #$container-pkg out)
+               (wrap-program orig-bin
+                 #:sh bash-bin
+                 `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))
+                 `("GST_PLUGIN_SYSTEM_PATH" = (,gst-paths)))))))))))
