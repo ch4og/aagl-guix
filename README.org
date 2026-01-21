@@ -10,7 +10,7 @@
 #+HTML: <a href="https://codeberg.org/ch4og/aagl-guix" rel="nofollow noopener"><img src="https://img.shields.io/badge/source-Codeberg-5993C8?logo=codeberg&logoColor=white&labelColor=24292e"></a>
 #+HTML: <a href="https://gnu.org/software/guile/" rel="nofollow noopener"><img src="https://codeberg.org/luis-felipe/guile-graphics/raw/branch/trunk/badges/gnu-guile-made.svg"></a>
 
-** Disclaimer
+* Disclaimer
 
 *** This project is *NOT* part of GNU Guix.
 *** This channel includes packages that run proprietary software.
@@ -93,5 +93,5 @@ If you need to share a path to container, you can add it to =GUIX_SANDBOX_EXTRA_
 
 * Acknowledgments
 
-- [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] - reference implementation for Nix
+- [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] - reference implementation for Nix.
 - [[https://gitlab.com/nonguix/nonguix][nonguix]] - Steam/FHS container mechanisms used as a base.
