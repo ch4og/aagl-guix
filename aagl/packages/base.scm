@@ -2,7 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages base)
-  #:use-module ((guix build-system glib-or-gtk) #:prefix glib-or-gtk-bs:)
+  #:use-module ((guix build-system glib-or-gtk) #:prefix gtk-bs:)
   #:use-module (guix build-system cargo)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -28,9 +28,15 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:export (make-aagl))
 
-(define* (make-aagl #:key name version hash (repo name))
-  (let* ((cargo-deps (aagl-cargo-inputs (string->symbol name)))
-         (github-url (string-append "https://github.com/an-anime-team/" repo)))
+(define* (make-aagl #:key name version hash)
+  (let* ((has-prefix? (or-map (lambda (p) (string-prefix? p name))
+                              '("the-" "an-")))
+         (bin-name (if has-prefix?
+                       (string-join (cdr (string-split name #\-)) "-")
+                       name))
+         (appid (string-append "moe.launcher." name))
+         (cargo-deps (aagl-cargo-inputs (string->symbol name)))
+         (github-url (string-append "https://github.com/an-anime-team/" name)))
     (package
       (name name)
       (version version)
@@ -40,7 +46,7 @@
          (uri (git-reference
                 (url github-url)
                 (commit version)))
-         (file-name (git-file-name repo version))
+         (file-name (git-file-name name version))
          (sha256 (base32 hash))))
       (build-system cargo-build-system)
       (arguments
@@ -48,18 +54,18 @@
         #:install-source? #f
         #:rust rust-1.88
         #:modules
-        `(,@glib-or-gtk-bs:%glib-or-gtk-build-system-modules
+        `(,@gtk-bs:%glib-or-gtk-build-system-modules
           ,@%cargo-build-system-modules)
         #:imported-modules
-        `(,@glib-or-gtk-bs:%glib-or-gtk-build-system-modules
+        `(,@gtk-bs:%glib-or-gtk-build-system-modules
           ,@%cargo-build-system-modules)
         #:phases
         #~(begin
-            (use-modules ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+            (use-modules ((guix build glib-or-gtk-build-system) #:prefix gtk:)
                          (guix build utils))
-            (let ((gen-gdk-pixbuf  (assoc-ref glib-or-gtk:%standard-phases 'generate-gdk-pixbuf-loaders-cache-file))
-                  (compile-schemas (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-                  (wrap            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
+            (let ((gen-gdk-pixbuf  (assoc-ref gtk:%standard-phases 'generate-gdk-pixbuf-loaders-cache-file))
+                  (compile-schemas (assoc-ref gtk:%standard-phases 'glib-or-gtk-compile-schemas))
+                  (wrap            (assoc-ref gtk:%standard-phases 'glib-or-gtk-wrap)))
               (modify-phases %standard-phases
                 (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file gen-gdk-pixbuf)
 
@@ -72,37 +78,38 @@
                 (add-after 'install 'glib-or-gtk-compile-schemas compile-schemas)
                 (add-after 'install 'glib-or-gtk-wrap wrap)
 
+                (delete 'patch-dot-desktop-files)
+
                 (add-after 'install 'install-desktop-files-and-icons
                   (lambda _
-                    (let ((desktop-file (string-append "assets/" #$name ".desktop"))
-                          (desktop-dest (string-append #$output "/share/applications/" #$name ".desktop"))
-                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/moe.launcher." #$repo ".png"))
-                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$repo ".png")))
+                    (let ((desktop-file (string-append "assets/" #$bin-name ".desktop"))
+                          (desktop-dest (string-append #$output "/share/applications/" #$bin-name ".desktop"))
+                          (icon-file "assets/images/icon.png")
+                          (icon-dest (string-append #$output "/share/icons/hicolor/512x512/apps/" #$appid ".png"))
+                          (pixmap-dest (string-append #$output "/share/pixmaps/" #$bin-name ".png")))
                       (mkdir-p (dirname desktop-dest))
                       (copy-file desktop-file desktop-dest)
                       (substitute* desktop-dest
-                        (("Exec=AppRun") (string-append "Exec=" #$name))
-                        (("Icon=icon") (string-append "Icon=" #$name "\n"
-                                                      "StartupWMClass=moe.launcher." #$repo)))
+                        (("Exec=AppRun") (string-append "Exec=" #$bin-name))
+                        (("Icon=icon") (string-append "Icon=" #$bin-name "\n"
+                                                      "StartupWMClass=" #$appid)))
                       (mkdir-p (dirname icon-dest))
-                      (copy-file "assets/images/icon.png" icon-dest)
+                      (copy-file icon-file icon-dest)
                       (mkdir-p (dirname pixmap-dest))
-                      (copy-file "assets/images/icon.png" pixmap-dest))))
-                (delete 'patch-dot-desktop-files))))))
+                      (copy-file icon-file pixmap-dest)))))))))
       (native-inputs (list pkg-config protobuf coreutils))
-      (inputs (cons*
-               gdk-pixbuf
-               git-minimal
-               glib
-               graphene
-               gsettings-desktop-schemas
-               gtk
-               libadwaita
-               pango
-               wayland
-               (list glib "bin")
-               (list zstd "lib")
-               cargo-deps))
+      (inputs (cons* gdk-pixbuf
+                     git-minimal
+                     glib
+                     graphene
+                     gsettings-desktop-schemas
+                     gtk
+                     libadwaita
+                     pango
+                     wayland
+                     (list glib "bin")
+                     (list zstd "lib")
+                     cargo-deps))
       (home-page github-url)
       (synopsis "One of Anime Team launchers.")
       (description "Prebuilt launcher with auto-patching and telemetry disabling")

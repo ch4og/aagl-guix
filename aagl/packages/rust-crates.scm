@@ -2935,7 +2935,7 @@ state system and configuration file manager, written in Rust")
 ;;;
 
 (define-cargo-inputs lookup-cargo-inputs
-  (anime-game-launcher =>
+  (an-anime-game-launcher =>
                        (list rust-addr2line-0.24.2
                              rust-adler2-2.0.1
                              rust-aes-0.8.4
@@ -4763,7 +4763,7 @@ state system and configuration file manager, written in Rust")
                          rust-zvariant-5.7.0
                          rust-zvariant-derive-5.7.0
                          rust-zvariant-utils-3.2.1))
-  (honkers-railway-launcher =>
+  (the-honkers-railway-launcher =>
                             (list rust-addr2line-0.24.2
                                   rust-adler2-2.0.1
                                   rust-aes-0.8.4

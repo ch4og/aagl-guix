@@ -68,12 +68,12 @@ Load the module defining the packages, then add them to a manifest/configuration
 - Module ~(aagl)~ provides all of the packages.
 
 - Module ~(aagl packages honkers-railway)~ provides:
-  - ~honkers-railway-launcher~
-  - ~honkers-railway-launcher-nvidia~
+  - ~the-honkers-railway-launcher~
+  - ~the-honkers-railway-launcher-nvidia~
 
 - Module ~(aagl packages anime-game)~ provides:
-  - ~anime-game-launcher~
-  - ~anime-game-launcher-nvidia~
+  - ~an-anime-game-launcher~
+  - ~an-anime-game-launcher-nvidia~
 
 - Module ~(aagl packages sleepy)~ provides:
   - ~sleepy-launcher~

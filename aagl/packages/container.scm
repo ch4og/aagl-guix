@@ -117,12 +117,16 @@
 
 (define* (aagl-fhs-for launcher
                        #:key
-                       (driver mesa)
-                       (name (package-name launcher)))
+                       (driver mesa))
   (show-aagl-warning)
 
   ;; TODO: After fixes to nonguix this should just be container-pkg value.
-  (let* ((container (aagl-container-for launcher name driver))
+  (let* ((has-prefix? (or-map (lambda (p) (string-prefix? p (package-name launcher)))
+                              '("the-" "an-")))
+         (name (if has-prefix?
+                   (string-join (cdr (string-split (package-name launcher) #\-)) "-")
+                   (package-name launcher)))
+         (container (aagl-container-for launcher name driver))
          (container-pkg (nonguix-container->package container)))
     (package
       (inherit container-pkg)
