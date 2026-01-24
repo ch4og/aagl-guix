@@ -37,6 +37,8 @@ Add the channel to your ~channels.scm~ and pull:
        "7C9E 7EBA 828C 58DF DACE  5BED 4DCC 7AB7 FC75 319B"))))
 #+END_SRC
 
+Substitute server is currently WIP.
+
 ** Configure the hosts service
 
 *For Guix System users:* Add ~aagl-hosts-service-type~ to your system configuration
