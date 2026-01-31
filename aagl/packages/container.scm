@@ -30,6 +30,7 @@
    (preserved-env `("GDK_BACKEND"            ;; Allow overriding
                     "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
                     "GST_PLUGIN_SYSTEM_PATH" ;; Fix GStreamer
+                    "XDG_DATA_DIRS"          ;; Unset for some reason
                     ,@%nvidia-environment-variable-regexps))
    (link-files '("share"))
    (description
@@ -67,4 +68,5 @@
                (wrap-program orig-bin
                  #:sh bash-bin
                  `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))
-                 `("GST_PLUGIN_SYSTEM_PATH" = (,gst-paths)))))))))))
+                 `("GST_PLUGIN_SYSTEM_PATH" = (,gst-paths))
+                 `("XDG_DATA_DIRS" = ("/usr/share")))))))))))
