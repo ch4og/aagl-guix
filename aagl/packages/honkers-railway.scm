@@ -3,6 +3,7 @@
 
 (define-module (aagl packages honkers-railway)
   #:use-module (guix packages)
+  #:use-module (gnu packages gl)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
@@ -13,11 +14,14 @@
    #:version "1.14.2"
    #:hash "1y5j3ha8l1m2a2dy0g4z4c9s2f2w9lx8l0wy78jiaj9304asahsv"))
 
+(define-public (the-honkers-railway-launcher-for driver)
+  (aagl-fhs-for the-honkers-railway-launcher-real driver))
+
 (define-public the-honkers-railway-launcher
-  (aagl-fhs-for the-honkers-railway-launcher-real))
+  (the-honkers-railway-launcher-for mesa))
 
 (define-public the-honkers-railway-launcher-nvidia
-  (aagl-fhs-for the-honkers-railway-launcher-real #:driver nvda))
+  (the-honkers-railway-launcher-for nvda))
 
 (define-public honkers-railway-launcher
   (deprecated-package "honkers-railway-launcher" the-honkers-railway-launcher))

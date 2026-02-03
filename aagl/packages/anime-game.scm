@@ -3,6 +3,7 @@
 
 (define-module (aagl packages anime-game)
   #:use-module (guix packages)
+  #:use-module (gnu packages gl)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
@@ -13,11 +14,14 @@
    #:version "3.18.0"
    #:hash "033wj3r7q44xspzp1wgpkg8yr75hwdfd6rfhrijllralz36dpzrf"))
 
+(define-public (an-anime-game-launcher-for driver)
+  (aagl-fhs-for an-anime-game-launcher-real driver))
+
 (define-public an-anime-game-launcher
-  (aagl-fhs-for an-anime-game-launcher-real))
+  (an-anime-game-launcher-for mesa))
 
 (define-public an-anime-game-launcher-nvidia
-  (aagl-fhs-for an-anime-game-launcher-real #:driver nvda))
+  (an-anime-game-launcher-for nvda))
 
 (define-public anime-game-launcher
   (deprecated-package "anime-game-launcher" an-anime-game-launcher))

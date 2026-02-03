@@ -37,7 +37,7 @@
     (string-append (package-description pkg)
                    " in a container."))))
 
-(define* (aagl-fhs-for launcher #:key (driver mesa))
+(define* (aagl-fhs-for launcher driver)
   (show-aagl-warning)
 
   (let* ((pkg-name (package-name launcher))
