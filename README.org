@@ -93,6 +93,10 @@ Launchers run inside an isolated FHS container. The container uses a *sandboxed 
 
 If you need to share a path to container, you can add it to =GUIX_SANDBOX_EXTRA_SHARES= environment variable.
 
+* Crashes on cutscenes
+
+If you are encountering crashes on cutscenes, ensure your nonguix commit is at least [[https://gitlab.com/nonguix/nonguix/-/commit/8975975a1cc1898de7653f519e45a0fd67fed2c9][8975975a]].
+
 * Acknowledgments
 
 - [[https://github.com/ezKEa/aagl-gtk-on-nix][ezKEa/aagl-gtk-on-nix]] - reference implementation for Nix.
