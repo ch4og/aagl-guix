@@ -37,10 +37,9 @@
 (define (domains->blocked-hosts domains)
   (if (null? domains)
       '()
-      (list
-       (host "0.0.0.0"
-             (car domains)
-             (cdr domains)))))
+      (list (host "0.0.0.0"
+                  (car domains)
+                  (cdr domains)))))
 
 (define %aagl-hosts
   (domains->blocked-hosts %aagl-blocked-domains))
@@ -51,20 +50,16 @@
   ;; Using `any` avoids false warnings on foreign systems
   ;; while remaining sufficient on Guix System.
   (catch #t
-         (lambda ()
-           (let ((hosts (call-with-input-file "/etc/hosts" read-string)))
-             (any (lambda (domain)
-                    (string-contains hosts domain))
-                  %aagl-blocked-domains)))
-         (lambda _ #f)))
+    (lambda ()
+      (let ((hosts (call-with-input-file "/etc/hosts" read-string)))
+        (any (lambda (domain)
+               (string-contains hosts domain)) %aagl-blocked-domains)))
+    (lambda _ #f)))
 
 (define aagl-hosts-service-type
-  (service-type
-    (name 'aagl-hosts)
-    (extensions
-     (list (service-extension
-            hosts-service-type
-            (const %aagl-hosts))))
-    (default-value #f)
-    (description
-     "Add /etc/hosts entries to block HoYo and Unity telemetry endpoints.")))
+  (service-type (name 'aagl-hosts)
+                (extensions (list (service-extension hosts-service-type
+                                                     (const %aagl-hosts))))
+                (default-value #f)
+                (description
+                 "Add /etc/hosts entries to block HoYo and Unity telemetry endpoints.")))
