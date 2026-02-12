@@ -6,13 +6,14 @@
   #:use-module (nongnu packages nvidia))
 
 (define-public (package-basename name)
-  (cond ((string-prefix? "the-" name)
-         (let ((basename (substring name 4)))
-           (if (string-null? basename) name basename)))
-        ((string-prefix? "an-" name)
-         (let ((basename (substring name 3)))
-           (if (string-null? basename) name basename)))
-        (else name)))
+  (cond
+   ((string-prefix? "the-" name)
+    (let ((basename (substring name 4)))
+      (if (string-null? basename) name basename)))
+   ((string-prefix? "an-" name)
+    (let ((basename (substring name 3)))
+      (if (string-null? basename) name basename)))
+   (else name)))
 
 (define-public (generate-package-name name driver)
   (string-append name
