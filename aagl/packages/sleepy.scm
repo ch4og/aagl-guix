@@ -9,10 +9,9 @@
   #:use-module (aagl packages base))
 
 (define sleepy-launcher-real
-  (make-aagl
-   #:name "sleepy-launcher"
-   #:version "1.6.2"
-   #:hash "092dav32rbsiz9j2an15114p7wj8f0lsy9lpxn1n3n78wfpajrdb"))
+  (make-aagl #:name "sleepy-launcher"
+             #:version "1.6.2"
+             #:hash "092dav32rbsiz9j2an15114p7wj8f0lsy9lpxn1n3n78wfpajrdb"))
 
 (define-public (sleepy-launcher-for driver)
   (aagl-fhs-for sleepy-launcher-real driver))

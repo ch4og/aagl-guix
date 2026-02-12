@@ -9,10 +9,9 @@
   #:use-module (aagl packages base))
 
 (define the-honkers-railway-launcher-real
-  (make-aagl
-   #:name "the-honkers-railway-launcher"
-   #:version "1.14.3"
-   #:hash "0qf2yvrspvkrs041in77x4zxdh8mid3zcd5fjr2r5m20n5v5b3cb"))
+  (make-aagl #:name "the-honkers-railway-launcher"
+             #:version "1.14.3"
+             #:hash "0qf2yvrspvkrs041in77x4zxdh8mid3zcd5fjr2r5m20n5v5b3cb"))
 
 (define-public (the-honkers-railway-launcher-for driver)
   (aagl-fhs-for the-honkers-railway-launcher-real driver))
@@ -23,8 +22,8 @@
 (define-public the-honkers-railway-launcher-nvidia
   (the-honkers-railway-launcher-for nvda))
 
-(define-public honkers-railway-launcher
-  (deprecated-package "honkers-railway-launcher" the-honkers-railway-launcher))
+(define-deprecated-package honkers-railway-launcher
+                           the-honkers-railway-launcher)
 
-(define-public honkers-railway-launcher-nvidia
-  (deprecated-package "honkers-railway-launcher-nvidia" the-honkers-railway-launcher-nvidia))
+(define-deprecated-package honkers-railway-launcher-nvidia
+                           the-honkers-railway-launcher-nvidia)

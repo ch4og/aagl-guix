@@ -9,10 +9,9 @@
   #:use-module (aagl packages base))
 
 (define an-anime-game-launcher-real
-  (make-aagl
-   #:name "an-anime-game-launcher"
-   #:version "3.18.0"
-   #:hash "033wj3r7q44xspzp1wgpkg8yr75hwdfd6rfhrijllralz36dpzrf"))
+  (make-aagl #:name "an-anime-game-launcher"
+             #:version "3.18.0"
+             #:hash "033wj3r7q44xspzp1wgpkg8yr75hwdfd6rfhrijllralz36dpzrf"))
 
 (define-public (an-anime-game-launcher-for driver)
   (aagl-fhs-for an-anime-game-launcher-real driver))
@@ -23,8 +22,8 @@
 (define-public an-anime-game-launcher-nvidia
   (an-anime-game-launcher-for nvda))
 
-(define-public anime-game-launcher
-  (deprecated-package "anime-game-launcher" an-anime-game-launcher))
+(define-deprecated-package anime-game-launcher
+                           an-anime-game-launcher)
 
-(define-public anime-game-launcher-nvidia
-  (deprecated-package "anime-game-launcher-nvidia" an-anime-game-launcher-nvidia))
+(define-deprecated-package anime-game-launcher-nvidia
+                           an-anime-game-launcher-nvidia)

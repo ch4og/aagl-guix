@@ -55,10 +55,10 @@
          #:builder
          #~(begin
              (use-modules (guix build utils))
-             (let* ((out          (assoc-ref %outputs "out"))
-                    (orig-bin     (string-append out "/bin/" #$name))
-                    (bash         (assoc-ref %build-inputs "bash-minimal"))
-                    (bash-bin     (string-append bash "/bin/bash"))
+             (let* ((out (assoc-ref %outputs "out"))
+                    (orig-bin (string-append out "/bin/" #$name))
+                    (bash (assoc-ref %build-inputs "bash-minimal"))
+                    (bash-bin (string-append bash "/bin/bash"))
                     (pixbuf-cache (string-append "/"
                                                  #$%gdk-pixbuf-loaders-cache-file-64)))
                (copy-recursively #$container-pkg out)
