@@ -27,9 +27,8 @@
     (fhs-union '()
                #:name "aagl-fhs-union-32"
                #:system "i686-linux"))
-   (preserved-env `("GDK_BACKEND"            ;; Allow overriding
-                    "GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
-                    "XDG_DATA_DIRS"          ;; Unset for some reason
+   (preserved-env `("GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
+                    "XDG_DATA_DIRS"          ;; Fix GTK wrapping
                     ,@%nvidia-environment-variable-regexps))
    (link-files '("share"))
    (description
