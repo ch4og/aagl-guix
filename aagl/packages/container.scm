@@ -2,6 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages container)
+  #:use-module (guix build-system trivial)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (gnu packages bash)
@@ -37,32 +38,39 @@
 
 (define* (aagl-fhs-for launcher driver)
   (show-aagl-warning)
-
   (let* ((pkg-name (package-name launcher))
          (name (package-basename pkg-name))
+         (wrapped-name (generate-package-name pkg-name driver))
          (container (aagl-container-for launcher name driver))
-         (container-pkg (nonguix-container->package container)))
+         (orig-pkg (nonguix-container->package container)))
     (package-with-alias
-     (generate-package-name pkg-name driver)
-     ;; TODO: After fixes to nonguix this should just be container-pkg value.
+     wrapped-name
+     ;; TODO: After fixes to nonguix this should just be orig-pkg value.
      (package
-       (inherit container-pkg)
-       (inputs `(,@(package-inputs container-pkg)
-                 ("bash-minimal" ,bash-minimal)))
+       (inherit orig-pkg)
+       (source #f)
+       (native-inputs '())
+       (inputs (list bash-minimal orig-pkg))
+       (build-system trivial-build-system)
        (arguments
         (list
          #:modules '((guix build utils))
          #:builder
          #~(begin
              (use-modules (guix build utils))
-             (let* ((out (assoc-ref %outputs "out"))
-                    (orig-bin (string-append out "/bin/" #$name))
-                    (bash (assoc-ref %build-inputs "bash-minimal"))
-                    (bash-bin (string-append bash "/bin/bash"))
-                    (pixbuf-cache (string-append "/"
-                                                 #$%gdk-pixbuf-loaders-cache-file-64)))
-               (copy-recursively #$container-pkg out)
-               (wrap-program orig-bin
-                 #:sh bash-bin
-                 `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-cache))
-                 `("XDG_DATA_DIRS" = ("/usr/share")))))))))))
+             (let* ((bin-loc (string-append "/bin/" #$name))
+                    (pixbuf #$%fhs64-gdk-pixbuf-loaders-cache-file))
+
+               (mkdir-p (string-append #$output "/bin"))
+
+               (symlink (string-append #$orig-pkg bin-loc)
+                        (string-append #$output bin-loc))
+
+               (symlink (string-append #$orig-pkg "/share")
+                        (string-append #$output "/share"))
+
+               (wrap-program (string-append #$output bin-loc)
+                 #:sh (string-append #$bash-minimal "/bin/sh")
+                 `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf))
+                 ;; https://gitlab.com/nonguix/nonguix/-/merge_requests/827
+                 `("XDG_DATA_DIRS" prefix ("/usr/share")))))))))))

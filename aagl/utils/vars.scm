@@ -31,6 +31,9 @@
         (string-append "lib64/" (substring real 4))
         real)))
 
+(define-public %fhs64-gdk-pixbuf-loaders-cache-file
+  (string-append "/" %gdk-pixbuf-loaders-cache-file-64))
+
 (define-public %aagl-runtime-libs
   `(,@fhs-min-libs
     ("bash" ,bash)
