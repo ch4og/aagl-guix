@@ -10,6 +10,7 @@
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gnome)
@@ -23,7 +24,8 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages sdl))
+  #:use-module (gnu packages sdl)
+  #:use-module (nongnu packages wine))
 
 (define-public %gdk-pixbuf-loaders-cache-file-64
   (let ((real %gdk-pixbuf-loaders-cache-file))
@@ -76,4 +78,8 @@
     ("pulseaudio" ,pulseaudio)
     ("wayland" ,wayland)
 
-    ("sdl2" ,sdl2)))
+    ("sdl2" ,sdl2)
+    ("winetricks" ,winetricks)
+    ("sed" ,sed)
+    ("grep" ,grep)
+    ("gawk" ,gawk)))
