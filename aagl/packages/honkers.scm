@@ -3,8 +3,6 @@
 
 (define-module (aagl packages honkers)
   #:use-module (guix packages)
-  #:use-module (gnu packages gl)
-  #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
 
@@ -17,7 +15,7 @@
   (aagl-fhs-for honkers-launcher-real driver))
 
 (define-public honkers-launcher
-  (honkers-launcher-for mesa))
+  (honkers-launcher-for 'mesa))
 
 (define-public honkers-launcher-nvidia
-  (honkers-launcher-for nvda))
+  (honkers-launcher-for 'nvda))

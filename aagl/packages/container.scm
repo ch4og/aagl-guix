@@ -9,7 +9,6 @@
   #:use-module (gnu packages gl)
   #:use-module (nonguix multiarch-container)
   #:use-module (nonguix utils)
-  #:use-module (nongnu packages nvidia)
   #:use-module (aagl services hosts)
   #:use-module (aagl utils name)
   #:use-module (aagl utils nvidia)
@@ -30,15 +29,16 @@
                #:system "i686-linux"))
    (preserved-env `("GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
                     "XDG_DATA_DIRS"          ;; Fix GTK wrapping
-                    ,@%nvidia-environment-variable-regexps))
+                    ,@(@ (nongnu packages nvidia) %nvidia-environment-variable-regexps)))
    (link-files '("share"))
    (description
     (string-append (package-description pkg)
                    " in a container."))))
 
-(define* (aagl-fhs-for launcher driver)
+(define* (aagl-fhs-for launcher driver-symbol)
   (show-aagl-warning)
   (let* ((pkg-name (package-name launcher))
+         (driver (driver-symbol->package driver-symbol))
          (name (package-basename pkg-name))
          (wrapped-name (generate-package-name pkg-name driver))
          (container (aagl-container-for launcher name driver))

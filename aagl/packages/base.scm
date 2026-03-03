@@ -21,7 +21,6 @@
   #:use-module (gnu packages version-control)
   #:use-module (nonguix multiarch-container)
   #:use-module (nonguix utils)
-  #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl utils cargo)
   #:use-module (aagl utils name)

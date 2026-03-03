@@ -3,8 +3,6 @@
 
 (define-module (aagl packages sleepy)
   #:use-module (guix packages)
-  #:use-module (gnu packages gl)
-  #:use-module (nongnu packages nvidia)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
 
@@ -17,7 +15,7 @@
   (aagl-fhs-for sleepy-launcher-real driver))
 
 (define-public sleepy-launcher
-  (sleepy-launcher-for mesa))
+  (sleepy-launcher-for 'mesa))
 
 (define-public sleepy-launcher-nvidia
-  (sleepy-launcher-for nvda))
+  (sleepy-launcher-for 'nvda))

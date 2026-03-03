@@ -2,8 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl utils name)
-  #:use-module (gnu packages gl)
-  #:use-module (nongnu packages nvidia))
+  #:use-module (gnu packages gl))
 
 (define-public (package-basename name)
   (cond
@@ -18,6 +17,6 @@
 (define-public (generate-package-name name driver)
   (string-append name
                  (cond ((eq? driver mesa) "")
-                       ((eq? driver nvda) "-nvidia")
-                       ((eq? driver nvdb) "-nvidia-beta")
+                       ((eq? driver (@ (nongnu packages nvidia) nvda)) "-nvidia")
+                       ((eq? driver (@ (nongnu packages nvidia) nvdb)) "-nvidia-beta")
                        (else driver))))
