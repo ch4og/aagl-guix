@@ -49,9 +49,6 @@
       (arguments
        (list
         #:install-source? #f
-        #:modules
-        `(,@gtk-bs:%glib-or-gtk-build-system-modules
-          ,@%cargo-build-system-modules)
         #:imported-modules
         `(,@gtk-bs:%glib-or-gtk-build-system-modules
           ,@%cargo-build-system-modules)
