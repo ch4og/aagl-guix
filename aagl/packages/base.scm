@@ -49,7 +49,6 @@
       (arguments
        (list
         #:install-source? #f
-        #:rust rust-1.88
         #:modules
         `(,@gtk-bs:%glib-or-gtk-build-system-modules
           ,@%cargo-build-system-modules)
