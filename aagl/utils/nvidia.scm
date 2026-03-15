@@ -14,8 +14,9 @@
            #:driver driver)
         (replace "mesa" driver))))
 
-(define-public (driver-symbol->package sym)
-  (match sym
+(define-public (driver-symbol->package x)
+  (match x
+    ((? package?) x)
     ('nvda (@ (nongnu packages nvidia) nvda))
     ('nvdb (@ (nongnu packages nvidia) nvdb))
     ('mesa mesa)))
