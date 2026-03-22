@@ -29,7 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:export (make-aagl))
 
-(define* (make-aagl #:key name version hash)
+(define* (make-aagl #:key name version hash (extra-inputs '()))
   (let* ((bin-name (package-basename name))
          (git-version version)
          (base-version (package-baseversion version))
@@ -107,7 +107,8 @@
                       (mkdir-p (dirname pixmap-dest))
                       (copy-file icon-file pixmap-dest)))))))))
       (native-inputs (list pkg-config protobuf coreutils))
-      (inputs (cons* gdk-pixbuf
+      (inputs
+       (append (list gdk-pixbuf
                      git-minimal
                      glib
                      graphene
@@ -117,8 +118,9 @@
                      pango
                      wayland
                      (list glib "bin")
-                     (list zstd "lib")
-                     cargo-deps))
+                     (list zstd "lib"))
+               extra-inputs
+               cargo-deps))
       (home-page github-url)
       (synopsis "One of Anime Team launchers.")
       (description
