@@ -24,25 +24,28 @@
   #:use-module (aagl packages container)
   #:use-module (aagl utils cargo)
   #:use-module (aagl utils name)
+  #:use-module (aagl utils version)
   #:use-module ((guix build-system glib-or-gtk) #:prefix gtk-bs:)
   #:use-module ((guix licenses) #:prefix license:)
   #:export (make-aagl))
 
 (define* (make-aagl #:key name version hash)
   (let* ((bin-name (package-basename name))
+         (git-version version)
+         (base-version (package-baseversion version))
          (appid (string-append "moe.launcher." name))
          (cargo-deps (aagl-cargo-inputs (string->symbol name)))
          (github-url (string-append "https://github.com/an-anime-team/" name)))
     (package
       (name name)
-      (version version)
+      (version base-version)
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                 (url github-url)
-                (commit version)))
-         (file-name (git-file-name name version))
+                (commit git-version)))
+         (file-name (git-file-name name git-version))
          (sha256
           (base32 hash))))
       (build-system cargo-build-system)
