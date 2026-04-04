@@ -29,7 +29,7 @@
                #:system "i686-linux"))
    (preserved-env `("GDK_PIXBUF_MODULE_FILE" ;; Fix loading icons
                     "XDG_DATA_DIRS"          ;; Fix GTK wrapping
-                    ,@(@ (nongnu packages nvidia) %nvidia-environment-variable-regexps)))
+                    ,@%nvidia-environment-variable-regexps))
    (link-files '("share"))
    (description
     (string-append (package-description pkg)

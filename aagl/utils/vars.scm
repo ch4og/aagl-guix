@@ -83,3 +83,24 @@
     ("sed" ,sed)
     ("grep" ,grep)
     ("gawk" ,gawk)))
+
+;;; SPDX-SnippetBegin
+;;; SPDX-License-Identifier: GPL-3.0-or-later
+;;; SPDX-SnippetCopyrightText: 2022-2026 Hilton Chain <hako@ultrarare.space>
+;;; SPDX-SnippetCopyrightText: 2026 Nikita Mitasov <me@ch4og.com>
+(define-public %nvidia-environment-variable-regexps
+  '("^__NV_"
+    "^__GL_"                            ; NVIDIA OpenGL settings.
+    "^__GLX_VENDOR_LIBRARY_NAME$"       ; For GLVND.
+    ;; NVIDIA PRIME Render Offload.
+    "^__VK_LAYER_NV_optimus$"
+    ;; NVIDIA NGX.
+    "^__NGX_CONF_FILE$"
+    "^PROTON_ENABLE_NGX_UPDATER$"
+    ;; NVIDIA Smooth Motion.
+    "^NVPRESENT_"
+    ;; NVIDIA VDPAU settings.
+    "^VDPAU_NVIDIA_"
+    ;; GSYNC control for Vulkan direct-to-display applications.
+    "^VKDirectGSYNC(Compatible)?Allowed$"))
+;;; SPDX-SnippetEnd
