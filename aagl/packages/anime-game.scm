@@ -2,6 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages anime-game)
+  #:use-module (gnu packages gl)
   #:use-module (guix packages)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
@@ -14,14 +15,4 @@
 (define-public (an-anime-game-launcher-for driver)
   (aagl-fhs-for an-anime-game-launcher-real driver))
 
-(define-public an-anime-game-launcher
-  (an-anime-game-launcher-for 'mesa))
-
-(define-public an-anime-game-launcher-nvidia
-  (an-anime-game-launcher-for 'nvda))
-
-(define-deprecated-package anime-game-launcher
-                           an-anime-game-launcher)
-
-(define-deprecated-package anime-game-launcher-nvidia
-                           an-anime-game-launcher-nvidia)
+(define-public an-anime-game-launcher (an-anime-game-launcher-for mesa))

@@ -67,23 +67,30 @@ Guix System configuration example:
 
 Load the module defining the packages, then add them to a manifest/configuration or just install.
 
-- Module ~(aagl)~ provides all of the packages.
+- Module ~(aagl)~ provides all packages *except nvidia variants*.
 
 - Module ~(aagl packages honkers-railway)~ provides:
   - ~the-honkers-railway-launcher~
-  - ~the-honkers-railway-launcher-nvidia~
 
 - Module ~(aagl packages anime-game)~ provides:
   - ~an-anime-game-launcher~
-  - ~an-anime-game-launcher-nvidia~
 
 - Module ~(aagl packages sleepy)~ provides:
   - ~sleepy-launcher~
-  - ~sleepy-launcher-nvidia~
 
 - Module ~(aagl packages honkers)~ provides:
   - ~honkers-launcher~
+
+- Module ~(aagl packages nvidia)~ provides nvidia variants:
+  - ~the-honkers-railway-launcher-nvidia~
+  - ~an-anime-game-launcher-nvidia~
+  - ~sleepy-launcher-nvidia~
   - ~honkers-launcher-nvidia~
+
+  You can select a specific nvidia driver version (like in nonguix):
+  - In manifests: use versioning ~an-anime-game-launcher-nvidia@590~
+  - In code: use the variable ~an-anime-game-launcher-nvidia-590~
+
 
 * Sandboxing behavior
 
@@ -92,10 +99,6 @@ Launchers run inside an isolated FHS container. The container uses a *sandboxed 
 =/home/<user>/.local/share/guix-sandbox-home/=
 
 If you need to share a path to container, you can add it to =GUIX_SANDBOX_EXTRA_SHARES= environment variable.
-
-* Crashes on cutscenes
-
-If you are encountering crashes on cutscenes, ensure your nonguix commit is at least [[https://gitlab.com/nonguix/nonguix/-/commit/8975975a1cc1898de7653f519e45a0fd67fed2c9][8975975a]].
 
 * Acknowledgments
 

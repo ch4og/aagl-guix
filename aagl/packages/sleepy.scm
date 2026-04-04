@@ -2,6 +2,7 @@
 ;;; SPDX-License-Identifier: GPL-3.0-or-later
 
 (define-module (aagl packages sleepy)
+  #:use-module (gnu packages gl)
   #:use-module (guix packages)
   #:use-module (aagl packages container)
   #:use-module (aagl packages base))
@@ -15,7 +16,4 @@
   (aagl-fhs-for sleepy-launcher-real driver))
 
 (define-public sleepy-launcher
-  (sleepy-launcher-for 'mesa))
-
-(define-public sleepy-launcher-nvidia
-  (sleepy-launcher-for 'nvda))
+  (sleepy-launcher-for mesa))
