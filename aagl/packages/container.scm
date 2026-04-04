@@ -35,10 +35,9 @@
     (string-append (package-description pkg)
                    " in a container."))))
 
-(define* (aagl-fhs-for launcher driver-symbol)
+(define* (aagl-fhs-for launcher driver)
   (show-aagl-warning)
   (let* ((pkg-name (package-name launcher))
-         (driver (driver-symbol->package driver-symbol))
          (name (package-basename pkg-name))
          (wrapped-name (generate-package-name pkg-name driver))
          (container (aagl-container-for launcher name driver))

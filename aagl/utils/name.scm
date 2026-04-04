@@ -17,6 +17,4 @@
 (define-public (generate-package-name name driver)
   (string-append name
                  (cond ((eq? driver mesa) "")
-                       ((eq? driver (@ (nongnu packages nvidia) nvda)) "-nvidia")
-                       ((eq? driver (@ (nongnu packages nvidia) nvdb)) "-nvidia-beta")
-                       (else driver))))
+                       (else "-nvidia"))))
