@@ -9,8 +9,8 @@
 
 (define the-honkers-railway-launcher-real
   (make-aagl #:name "the-honkers-railway-launcher"
-             #:version "1.14.4"
-             #:hash "04kpkb1qx72bb2sj46r4m2110ly27cib83qy6in9v9gi8vgl64sa"))
+             #:version "1.14.5"
+             #:hash "03c04h0mbj62bbfjz68l9rywiffg0cyb3fnnpyb856vg4jd4j7b0"))
 
 (define-public (the-honkers-railway-launcher-for driver) (aagl-fhs-for the-honkers-railway-launcher-real driver))
 
