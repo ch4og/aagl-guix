@@ -19,6 +19,7 @@
           (string-append
            (package-name (builder driver))
            (cond ((eq? driver nvda-beta) "-beta")
+                 ((eq? driver nvda-new-feature) "-new-feature")
                  (else "")))
           (package
             (inherit (builder driver))
@@ -34,8 +35,8 @@
 (define-nvidia-aagl an-anime-game-launcher-nvidia-580 an-anime-game-launcher-nvidia-user-alias-580
   an-anime-game-launcher-for nvda-580)
 
-(define-nvidia-aagl an-anime-game-launcher-nvidia-590 an-anime-game-launcher-nvidia-user-alias-590
-  an-anime-game-launcher-for nvda-590)
+(define-nvidia-aagl an-anime-game-launcher-nvda-new-feature an-anime-game-launcher-nvidia-user-alias-590
+  an-anime-game-launcher-for nvda-new-feature)
 
 (define-nvidia-aagl an-anime-game-launcher-nvidia-595 an-anime-game-launcher-nvidia-user-alias-595
   an-anime-game-launcher-for nvda-595)
@@ -55,8 +56,8 @@
 (define-nvidia-aagl honkers-launcher-nvidia-580 honkers-launcher-nvidia-user-alias-580
   honkers-launcher-for nvda-580)
 
-(define-nvidia-aagl honkers-launcher-nvidia-590 honkers-launcher-nvidia-user-alias-590
-  honkers-launcher-for nvda-590)
+(define-nvidia-aagl honkers-launcher-nvda-new-feature honkers-launcher-nvidia-user-alias-590
+  honkers-launcher-for nvda-new-feature)
 
 (define-nvidia-aagl honkers-launcher-nvidia-595 honkers-launcher-nvidia-user-alias-595
   honkers-launcher-for nvda-595)
@@ -76,8 +77,8 @@
 (define-nvidia-aagl the-honkers-railway-launcher-nvidia-580 the-honkers-railway-launcher-nvidia-user-alias-580
   the-honkers-railway-launcher-for nvda-580)
 
-(define-nvidia-aagl the-honkers-railway-launcher-nvidia-590 the-honkers-railway-launcher-nvidia-user-alias-590
-  the-honkers-railway-launcher-for nvda-590)
+(define-nvidia-aagl the-honkers-railway-launcher-nvda-new-feature the-honkers-railway-launcher-nvidia-user-alias-590
+  the-honkers-railway-launcher-for nvda-new-feature)
 
 (define-nvidia-aagl the-honkers-railway-launcher-nvidia-595 the-honkers-railway-launcher-nvidia-user-alias-595
   the-honkers-railway-launcher-for nvda-595)
@@ -97,8 +98,8 @@
 (define-nvidia-aagl sleepy-launcher-nvidia-580 sleepy-launcher-nvidia-user-alias-580
   sleepy-launcher-for nvda-580)
 
-(define-nvidia-aagl sleepy-launcher-nvidia-590 sleepy-launcher-nvidia-user-alias-590
-  sleepy-launcher-for nvda-590)
+(define-nvidia-aagl sleepy-launcher-nvda-new-feature sleepy-launcher-nvidia-user-alias-590
+  sleepy-launcher-for nvda-new-feature)
 
 (define-nvidia-aagl sleepy-launcher-nvidia-595 sleepy-launcher-nvidia-user-alias-595
   sleepy-launcher-for nvda-595)
