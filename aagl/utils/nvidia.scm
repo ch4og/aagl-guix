@@ -5,9 +5,9 @@
 (define-module (aagl utils nvidia)
   #:use-module (gnu packages gl)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 string-fun)
   #:use-module (guix packages)
-  #:use-module (nonguix utils)
-  #:export (define-nvidia-container))
+  #:use-module (nonguix utils))
 
 (define-public %nvidia-environment-variable-regexps
   '("^__NV_"
@@ -24,6 +24,22 @@
     "^VDPAU_NVIDIA_"
     ;; GSYNC control for Vulkan direct-to-display applications.
     "^VKDirectGSYNC(Compatible)?Allowed$"))
+
+(define-public (nvidia-driver-suffix driver)
+  (let ((name (symbol->string driver)))
+    (if (string-prefix? "nvda-" name)
+        (substring name (string-length "nvda-"))
+        name)))
+
+(define-public (nvidia-alias-name base suffix)
+  (if (member suffix '("new-feature" "beta"))
+      (string-append base "-nvidia-" suffix)
+      (string-append base "-nvidia")))
+
+(define-public (make-nvidia-alias name variant driver)
+  (package
+    (inherit (package-with-alias name variant))
+    (version (package-version driver))))
 
 (define* (replace-mesa obj #:key driver)
   (with-transformation
