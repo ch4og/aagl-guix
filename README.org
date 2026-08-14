@@ -88,8 +88,10 @@ Load the module defining the packages, then add them to a manifest/configuration
   - ~honkers-launcher-nvidia~
 
   You can select a specific nvidia driver version (like in nonguix):
-  - In manifests: use versioning ~an-anime-game-launcher-nvidia@590~
-  - In code: use the variable ~an-anime-game-launcher-nvidia-590~
+  - In code: use variables such as ~an-anime-game-launcher-nvidia-580~,
+    ~an-anime-game-launcher-nvidia-595~, or
+    ~an-anime-game-launcher-nvidia-new-feature~.
+  - The unversioned ~an-anime-game-launcher-nvidia~ uses the default driver.
 
 
 * Sandboxing behavior
