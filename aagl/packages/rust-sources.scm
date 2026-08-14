@@ -137,6 +137,12 @@ state system and configuration file manager, written in Rust")
    #:commit "ba60faf15940e21fd20134c8f533fe981d313fee"
    #:sha "06qzd3m2hl0v4ygg7xsl8b5bs837kca08wxz0qk014drwvwj7cj9"))
 
+(define-public rust-anime-game-core-1.39.1.aa8c5ce
+  (make-anime-game-core
+   #:version "1.39.1"
+   #:commit "aa8c5ce41dbbc0ab57b49214e02d54001b83edac"
+   #:sha "1b809a7qz4bg1xkp03grdmgrscrxl6ch9dnjzsk8n9zsibg51dyd"))
+
 (define-public rust-anime-launcher-sdk-1.32.0.87c4206
   (make-anime-launcher-sdk
    #:version "1.32.0"
@@ -172,6 +178,12 @@ state system and configuration file manager, written in Rust")
    #:version "1.35.12"
    #:commit "4b9cb6efb04bacec57747e19e7277086d201562e"
    #:sha "11lr87xhljyk4wz1xzaqnyzz9bzi70hgmp0xfn7k84zhlwpf4ywa"))
+
+(define-public rust-anime-launcher-sdk-1.36.4.bf66ccb
+  (make-anime-launcher-sdk
+   #:version "1.36.4"
+   #:commit "bf66ccba2eb50f87911efdc93e8e9976eaf28102"
+   #:sha "0366df6ny2aqm2dxcdmdk735pprjx791jdgl2g0djhlvlh6ls46h"))
 
 (define-public rust-sophon-lib-0.1.5.898581c
   (make-sophon-lib
