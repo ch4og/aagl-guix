@@ -71,7 +71,7 @@
                 (add-after 'unpack 'use-guix-vendored-dependencies
                   (lambda _
                     (substitute* "Cargo.toml"
-                      (("tag =.*")
+                      (("^tag =.*")
                        "version = \"*\"\n")
                       (("^git = .*")
                        ""))))
