@@ -16,154 +16,12 @@
   #:use-module (gnu packages rust)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (aagl utils cargo)
+  #:use-module ((aagl packages rust-sources) #:prefix package:)
   #:export (lookup-cargo-inputs))
 
 ;;;
 ;;; This file is managed by ‘guix import’.  Do NOT add definitions manually.
 ;;;
-
-(define* (make-anime-game-core #:key version commit sha)
-  (let ((name "rust-anime-game-core")
-        (crate-symbol (string->symbol (string-append "anime-game-core-" version)))
-        (github-url "https://github.com/an-anime-team/anime-game-core"))
-    (package
-      (name name)
-      (version (git-version version "0" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference (url github-url) (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256 (base32 sha))))
-      (build-system cargo-build-system)
-      (arguments
-       (list #:install-source? #t
-             #:skip-build? #t
-             #:cargo-package-crates
-             ''("anime-game-core")))
-      (inputs (aagl-cargo-inputs crate-symbol))
-      (home-page github-url)
-      (synopsis "Unified library to control different games installations.")
-      (description "Unified library to controll different games installations.
-Provides basic instruments for adding support for mechanics like game updating.")
-      (license license:gpl3))))
-
-(define* (make-anime-launcher-sdk #:key version commit sha)
-  (let ((name "rust-anime-launcher-sdk")
-        (crate-symbol (string->symbol (string-append "anime-launcher-sdk-" version)))
-        (github-url "https://github.com/an-anime-team/anime-launcher-sdk"))
-    (package
-      (name name)
-      (version (git-version version "0" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference (url github-url) (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256 (base32 sha))))
-      (build-system cargo-build-system)
-      (arguments
-       (list #:install-source? #t
-             #:skip-build? #t
-             #:cargo-package-crates
-             ''("anime-launcher-sdk")
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'use-guix-vendored-dependencies
-                   (lambda _
-                     (substitute* "Cargo.toml"
-                       (("tag =.*") "version = \"*\"\n")
-                       (("^git = .*") "")))))))
-      (inputs (aagl-cargo-inputs crate-symbol))
-      (home-page github-url)
-      (synopsis "Anime Game Launcher development SDK")
-      (description "SDK based on anime-game-core with basic instruments like launcher
-state system and configuration file manager, written in Rust")
-      (license license:gpl3))))
-
-
-(define* (make-sophon-lib #:key version commit sha)
-  (let ((name "rust-sophon-lib")
-        (crate-symbol (string->symbol (string-append "sophon-lib-" version)))
-        (github-url "https://github.com/dawn-winery/sophon-tools"))
-    (package
-      (name name)
-      (version (git-version version "0" commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference (url github-url) (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256 (base32 sha))))
-      (build-system cargo-build-system)
-      (arguments
-       (list #:install-source? #t
-             #:skip-build? #t
-             #:cargo-package-crates
-             ''("sophon-lib")))
-      (inputs (aagl-cargo-inputs crate-symbol))
-      (home-page github-url)
-      (synopsis "")
-      (description "")
-      (license license:gpl3))))
-
-(define rust-anime-game-core-1.36.3.044a1e8
-  (make-anime-game-core
-   #:version "1.36.3"
-   #:commit "044a1e83782fb853a9cfa8bcb807689a5c9d73ae"
-   #:sha "156s4daz89048r7bhk8ibr5rb07maya0fypvigkyn2dxldjjj46j"))
-
-(define rust-anime-game-core-1.37.4.cf01ae2
-  (make-anime-game-core
-   #:version "1.37.4"
-   #:commit "cf01ae265602b2bfd222d560b3c9f912b82ba5e7"
-   #:sha "1mlv3qsv3996zvbrkdi4frz8kqjmfjy79am35mb773jska0zwbq5"))
-
-(define rust-anime-game-core-1.38.0.d3fce1c
-  (make-anime-game-core
-   #:version "1.38.0"
-   #:commit "d3fce1cc7a8b95271f9917db73987bee9426a364"
-   #:sha "1nbf5fl3i7vdlwc2hkyhc2jsfvim9gpfrmjbqavnqg5ym9pfcabh"))
-
-(define rust-anime-launcher-sdk-1.32.0.87c4206
-  (make-anime-launcher-sdk
-   #:version "1.32.0"
-   #:commit "87c42064d8422a39b92efbd9035cbd38fffe8f91"
-   #:sha "189nsrm41ihhbg85qxvr650nhi7s4c2cj8m5sgmjbw0k7jfrq75j"))
-
-(define rust-anime-launcher-sdk-1.33.0.f75593b
-  (make-anime-launcher-sdk
-   #:version "1.33.0"
-   #:commit "f75593be9df416dd76ac6c5ce28140ed0feaef4d"
-   #:sha "0jrrgpsc4syp3r7v0afnaigl2g4sj5y06fjy2anykllavsngmj55"))
-
-(define rust-anime-launcher-sdk-1.34.7.159b4af
-  (make-anime-launcher-sdk
-   #:version "1.34.7"
-   #:commit "159b4afd283a91b94c1153c89551e302cfcb3bf3"
-   #:sha "17lkjwy32b7y8cvd81m0n8l7nlgs3nwgq6kxdm1g6bd7svc3dap6"))
-
-(define rust-anime-launcher-sdk-1.35.1.d0ea1ae
-  (make-anime-launcher-sdk
-   #:version "1.35.1"
-   #:commit "d0ea1ae7fa9913c791e026c285c4414103eeae89"
-   #:sha "0p6dla9nfmhb932b48ggjx0sjz48agxsdwcxgvvi81gh8jm39gj5"))
-
-(define rust-paimon-0.1.0.2f80905
-  ;; TODO REVIEW: Define standalone package if this is a workspace.
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "https://dawn.wine/lily/paimon")
-          (commit "2f80905d9e711e81bf5c80216a0760c30271da33")))
-    (file-name (git-file-name "rust-paimon" "0.1.0.2f80905"))
-    (sha256 (base32 "16fvspbx5hvhf0qifvy1irlbimdcrj4cv4iywnnjrsil5yz36y5z"))))
-
-(define rust-sophon-lib-0.1.5.898581c
-  (make-sophon-lib
-   #:version "0.1.5"
-   #:commit "898581c4962682ab911a58ab90226095304db08a"
-   #:sha "1i0jdqf0bb47rvjhcgf6128f8rcakq3c6087vh023iik4fvn8rda"))
 
 ;;;
 ;;; Rust libraries fetched from crates.io and non-workspace development
@@ -171,6 +29,30 @@ state system and configuration file manager, written in Rust")
 ;;;
 
 (define qqqq-separator 'begin-of-crates)
+
+(define rust-anime-game-core-1.36.3.044a1e8
+  package:rust-anime-game-core-1.36.3.044a1e8)
+
+(define rust-anime-game-core-1.37.4.cf01ae2
+  package:rust-anime-game-core-1.37.4.cf01ae2)
+
+(define rust-anime-game-core-1.38.0.d3fce1c
+  package:rust-anime-game-core-1.38.0.d3fce1c)
+
+(define rust-anime-launcher-sdk-1.32.0.87c4206
+  package:rust-anime-launcher-sdk-1.32.0.87c4206)
+
+(define rust-anime-launcher-sdk-1.33.0.f75593b
+  package:rust-anime-launcher-sdk-1.33.0.f75593b)
+
+(define rust-anime-launcher-sdk-1.34.7.159b4af
+  package:rust-anime-launcher-sdk-1.34.7.159b4af)
+
+(define rust-anime-launcher-sdk-1.35.1.d0ea1ae
+  package:rust-anime-launcher-sdk-1.35.1.d0ea1ae)
+
+(define rust-sophon-lib-0.1.5.898581c
+  package:rust-sophon-lib-0.1.5.898581c)
 
 (define rust-addr2line-0.24.2
   (crate-source "addr2line" "0.24.2"
@@ -1487,6 +1369,16 @@ state system and configuration file manager, written in Rust")
 (define rust-os-info-3.12.0
   (crate-source "os_info" "3.12.0"
                 "1hzzmxj8z69q5l1hzlnqnaa56ip9kvmghp8k750w6hwdvrgsrqfh"))
+
+(define rust-paimon-0.1.0.2f80905
+  ;; TODO REVIEW: Define standalone package if this is a workspace.
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://dawn.wine/lily/paimon")
+          (commit "2f80905d9e711e81bf5c80216a0760c30271da33")))
+    (file-name (git-file-name "rust-paimon" "0.1.0.2f80905"))
+    (sha256 (base32 "16fvspbx5hvhf0qifvy1irlbimdcrj4cv4iywnnjrsil5yz36y5z"))))
 
 (define rust-pango-0.20.12
   (crate-source "pango" "0.20.12"
