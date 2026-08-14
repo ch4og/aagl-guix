@@ -113,18 +113,6 @@ state system and configuration file manager, written in Rust")
    #:commit "044a1e83782fb853a9cfa8bcb807689a5c9d73ae"
    #:sha "156s4daz89048r7bhk8ibr5rb07maya0fypvigkyn2dxldjjj46j"))
 
-(define-public rust-anime-game-core-1.37.4.cf01ae2
-  (make-anime-game-core
-   #:version "1.37.4"
-   #:commit "cf01ae265602b2bfd222d560b3c9f912b82ba5e7"
-   #:sha "1mlv3qsv3996zvbrkdi4frz8kqjmfjy79am35mb773jska0zwbq5"))
-
-(define-public rust-anime-game-core-1.38.0.d3fce1c
-  (make-anime-game-core
-   #:version "1.38.0"
-   #:commit "d3fce1cc7a8b95271f9917db73987bee9426a364"
-   #:sha "1nbf5fl3i7vdlwc2hkyhc2jsfvim9gpfrmjbqavnqg5ym9pfcabh"))
-
 (define-public rust-anime-game-core-1.38.8.de96f35
   (make-anime-game-core
    #:version "1.38.8"
@@ -149,24 +137,6 @@ state system and configuration file manager, written in Rust")
    #:commit "87c42064d8422a39b92efbd9035cbd38fffe8f91"
    #:sha "189nsrm41ihhbg85qxvr650nhi7s4c2cj8m5sgmjbw0k7jfrq75j"))
 
-(define-public rust-anime-launcher-sdk-1.33.0.f75593b
-  (make-anime-launcher-sdk
-   #:version "1.33.0"
-   #:commit "f75593be9df416dd76ac6c5ce28140ed0feaef4d"
-   #:sha "0jrrgpsc4syp3r7v0afnaigl2g4sj5y06fjy2anykllavsngmj55"))
-
-(define-public rust-anime-launcher-sdk-1.34.7.159b4af
-  (make-anime-launcher-sdk
-   #:version "1.34.7"
-   #:commit "159b4afd283a91b94c1153c89551e302cfcb3bf3"
-   #:sha "17lkjwy32b7y8cvd81m0n8l7nlgs3nwgq6kxdm1g6bd7svc3dap6"))
-
-(define-public rust-anime-launcher-sdk-1.35.1.d0ea1ae
-  (make-anime-launcher-sdk
-   #:version "1.35.1"
-   #:commit "d0ea1ae7fa9913c791e026c285c4414103eeae89"
-   #:sha "0p6dla9nfmhb932b48ggjx0sjz48agxsdwcxgvvi81gh8jm39gj5"))
-
 (define-public rust-anime-launcher-sdk-1.35.10.c0991af
   (make-anime-launcher-sdk
    #:version "1.35.10"
@@ -184,12 +154,6 @@ state system and configuration file manager, written in Rust")
    #:version "1.36.4"
    #:commit "bf66ccba2eb50f87911efdc93e8e9976eaf28102"
    #:sha "0366df6ny2aqm2dxcdmdk735pprjx791jdgl2g0djhlvlh6ls46h"))
-
-(define-public rust-sophon-lib-0.1.5.898581c
-  (make-sophon-lib
-   #:version "0.1.5"
-   #:commit "898581c4962682ab911a58ab90226095304db08a"
-   #:sha "1i0jdqf0bb47rvjhcgf6128f8rcakq3c6087vh023iik4fvn8rda"))
 
 (define-public rust-sophon-lib-0.1.6.89f4a70
   (make-sophon-lib
