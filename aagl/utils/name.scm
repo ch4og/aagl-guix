@@ -18,3 +18,10 @@
   (string-append name
                  (cond ((eq? driver mesa) "")
                        (else "-nvidia"))))
+
+(define-public (launcher-base-name builder-name)
+  (let* ((name (symbol->string builder-name))
+         (suffix "-for"))
+    (if (string-suffix? suffix name)
+        (substring name 0 (- (string-length name) (string-length suffix)))
+        name)))
