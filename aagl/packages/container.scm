@@ -3,6 +3,7 @@
 
 (define-module (aagl packages container)
   #:use-module (guix build-system trivial)
+  #:use-module (guix diagnostics)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (gnu packages bash)
@@ -35,7 +36,10 @@
     (string-append (package-description pkg)
                    " in a container."))))
 
-(define* (aagl-fhs-for launcher driver)
+(define-syntax-rule (aagl-fhs-for launcher driver)
+  (aagl-fhs-for* launcher driver (current-source-location)))
+
+(define* (aagl-fhs-for* launcher driver location)
   (show-aagl-hosts-warning)
   (let* ((pkg-name (package-name launcher))
          (name (package-basename pkg-name))
@@ -46,7 +50,7 @@
      (package
        (inherit orig-pkg)
        (name wrapped-name)
-       (location (package-location orig-pkg))
+       (location (source-properties->location location))
        (source #f)
        (native-inputs '())
        (inputs (list bash-minimal orig-pkg))

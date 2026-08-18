@@ -4,6 +4,7 @@
 
 (define-module (aagl packages nvidia)
   #:use-module (ice-9 string-fun)
+  #:use-module (guix diagnostics)
   #:use-module (nongnu packages nvidia)
   #:use-module (aagl utils name)
   #:use-module (aagl utils nvidia)
@@ -25,6 +26,11 @@
     the-honkers-railway-launcher-for
     sleepy-launcher-for))
 
+(define (with-nvidia-location pkg)
+  (package
+    (inherit pkg)
+    (location (source-properties->location (current-source-location)))))
+
 (define (define-nvidia-variant! builder-name driver-name)
   (let* ((builder (module-ref (current-module) builder-name))
          (base-name (launcher-base-name builder-name))
@@ -35,7 +41,7 @@
          (alias-name
           (string->symbol
            (string-append base-name "-nvidia-user-alias-" suffix)))
-         (variant (builder driver)))
+         (variant (with-nvidia-location (builder driver))))
     (module-define! (current-module) variant-name (hidden-package variant))
     (module-define!
      (current-module) alias-name
@@ -49,7 +55,8 @@
   (let* ((builder (module-ref (current-module) builder-name))
          (name (string->symbol
                 (string-append (launcher-base-name builder-name) "-nvidia"))))
-    (module-define! (current-module) name (builder nvda))
+    (module-define! (current-module) name
+                    (with-nvidia-location (builder nvda)))
     (module-export! (current-module) (list name))))
 
 (map
