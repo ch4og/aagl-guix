@@ -17,13 +17,13 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
-  #:use-module (gnu packages rust)
   #:use-module (gnu packages version-control)
   #:use-module (nonguix multiarch-container)
   #:use-module (nonguix utils)
   #:use-module (aagl packages container)
   #:use-module (aagl utils cargo)
   #:use-module (aagl utils name)
+  #:use-module (aagl utils rust)
   #:use-module (aagl utils version)
   #:use-module ((guix build-system glib-or-gtk) #:prefix gtk-bs:)
   #:use-module ((guix licenses) #:prefix license:)
@@ -52,7 +52,7 @@
       (arguments
        (list
         #:install-source? #f
-        #:rust rust-1.94
+        #:rust (safe-rust 'rust-1.94)
         #:imported-modules
         `(,@gtk-bs:%glib-or-gtk-build-system-modules
           ,@%cargo-build-system-modules)

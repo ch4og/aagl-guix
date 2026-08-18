@@ -5,6 +5,10 @@
   #:use-module (guix ui)
   #:use-module (aagl services hosts))
 
+(define-public (show-aagl-fallback-warning unavailable fallback)
+  (warning (G_ "AAGL: ~a is not available in current revision.  \
+Using ~a as a replacement.~%") unavailable fallback))
+
 (define-public show-aagl-hosts-warning
   (let ((shown? #f))
     (lambda ()
