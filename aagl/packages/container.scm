@@ -42,11 +42,11 @@
          (wrapped-name (generate-package-name pkg-name driver))
          (container (aagl-container-for launcher name driver))
          (orig-pkg (nonguix-container->package container)))
-    (package-with-alias
-     wrapped-name
      ;; TODO: After fixes to nonguix this should just be orig-pkg value.
      (package
        (inherit orig-pkg)
+       (name wrapped-name)
+       (location (package-location orig-pkg))
        (source #f)
        (native-inputs '())
        (inputs (list bash-minimal orig-pkg))
@@ -72,4 +72,4 @@
                  #:sh (string-append #$bash-minimal "/bin/sh")
                  `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf))
                  ;; https://gitlab.com/nonguix/nonguix/-/merge_requests/827
-                 `("XDG_DATA_DIRS" prefix ("/usr/share")))))))))))
+                 `("XDG_DATA_DIRS" prefix ("/usr/share"))))))))))
