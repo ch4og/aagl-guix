@@ -5,11 +5,11 @@
   #:use-module (guix ui)
   #:use-module (aagl services hosts))
 
-(define-public show-aagl-warning
+(define-public show-aagl-hosts-warning
   (let ((shown? #f))
     (lambda ()
       (unless (or shown?
                   (aagl-hosts-configured?))
-        (warning (G_ "AAGL launchers require blocking hosts!\n"))
-        (info (G_ "More details: https://codeberg.org/ch4og/aagl-guix\n"))
+        (warning (G_ "AAGL: Launchers require telemetry hosts to be blocked.  \
+More details: https://codeberg.org/ch4og/aagl-guix#headline-7~%"))
         (set! shown? #t)))))

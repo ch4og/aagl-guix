@@ -39,7 +39,7 @@ Add the channel to your ~channels.scm~ and pull:
 
 Substitute server is currently WIP.
 
-** Configure the hosts service
+** Configure telemetry hosts blocking
 
 *For Guix System users:* Add ~aagl-hosts-service-type~ to your system configuration
 to block telemetry servers. This is required for the launchers to work properly.

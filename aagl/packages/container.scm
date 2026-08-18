@@ -36,7 +36,7 @@
                    " in a container."))))
 
 (define* (aagl-fhs-for launcher driver)
-  (show-aagl-warning)
+  (show-aagl-hosts-warning)
   (let* ((pkg-name (package-name launcher))
          (name (package-basename pkg-name))
          (wrapped-name (generate-package-name pkg-name driver))
