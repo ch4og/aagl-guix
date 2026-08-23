@@ -42,9 +42,9 @@
 (define* (aagl-fhs-for* launcher driver location)
   (show-aagl-hosts-warning)
   (let* ((pkg-name (package-name launcher))
-         (name (package-basename pkg-name))
+         (launcher-name (package-basename pkg-name))
          (wrapped-name (generate-package-name pkg-name driver))
-         (container (aagl-container-for launcher name driver))
+         (container (aagl-container-for launcher launcher-name driver))
          (orig-pkg (nonguix-container->package container)))
      ;; TODO: After fixes to nonguix this should just be orig-pkg value.
      (package
@@ -61,7 +61,7 @@
          #:builder
          #~(begin
              (use-modules (guix build utils))
-             (let* ((bin-loc (string-append "/bin/" #$name))
+             (let* ((bin-loc (string-append "/bin/" #$launcher-name))
                     (pixbuf #$%fhs64-gdk-pixbuf-loaders-cache-file))
 
                (mkdir-p (string-append #$output "/bin"))
