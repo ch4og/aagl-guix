@@ -9,8 +9,8 @@
 
 (define honkers-launcher-real
   (make-aagl #:name "honkers-launcher"
-             #:version "1.13.0"
-             #:hash "1dmyh9nnngd6z2djnzkq83axrzhdn7xmbanh8ddp73fhadpgdzbm"))
+             #:version "1.14.0"
+             #:hash "0ivmvz4wihxd84672133lky98h0g8374sf3yiy29cxlw45pbsvx3"))
 
 (define-public (honkers-launcher-for driver) (aagl-fhs-for honkers-launcher-real driver))
 
