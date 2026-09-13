@@ -9,8 +9,8 @@
 
 (define sleepy-launcher-real
   (make-aagl #:name "sleepy-launcher"
-             #:version "1.7.0"
-             #:hash "0dx61zpsq0y2n2c92rhqypj4ag1f6g82s2z815skzlgrxfj1p6c9"))
+             #:version "1.7.1"
+             #:hash "1w1w8il6k2hlf0sgp5miac5jchvvyniwjll4lxf1sm3rf81yn833"))
 
 (define-public (sleepy-launcher-for driver)
   (aagl-fhs-for sleepy-launcher-real driver))
