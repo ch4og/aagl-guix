@@ -20,7 +20,7 @@ other AAGL launchers as well.
 A launcher update has three parts:
 
 1. update the launcher's Git tag and Guix source hash;
-2. import its Rust dependency closure from a freshly generated `Cargo.lock`;
+2. import its Rust dependency closure from the upstream committed `Cargo.lock`;
 3. package every newly introduced Git/workspace crate as a standalone Cargo
    package.
 
@@ -43,10 +43,11 @@ package and dependency inputs before a dependent launcher can build.
   dependencies imperatively.
 - Do not stage, commit, amend, or discard changes.
 - Fetching source is not enough to trust it for execution.  Before running
-  `cargo generate-lockfile` or `guix build` against external source, name the
-  relevant upstream URLs and obtain explicit authorization if it was not
-  already granted for this request.  The confirmation gate after release
-  discovery defines how to obtain that authorization.
+  `cargo generate-lockfile` when an upstream lockfile is absent, or before
+  running `guix build` against external source, name the relevant upstream URLs
+  and obtain explicit authorization if it was not already granted for this
+  request.  The confirmation gate after release discovery defines how to obtain
+  that authorization.
 - Never run commands on remote hosts, Docker daemons, or Kubernetes clusters.
 
 ## Confirmation gate
@@ -57,17 +58,20 @@ an update proposal containing:
 - the launcher and its current and proposed versions;
 - the package definition and other source files expected to change;
 - every upstream URL that will be cloned or whose source will be executed;
-- the commands that execute upstream source: `cargo generate-lockfile` and the
-  final `guix build -L. LAUNCHER-NAME`.
+- the commands that execute upstream source: the final
+  `guix build -L. LAUNCHER-NAME`, plus `cargo generate-lockfile` only if the
+  launcher or a standalone dependency has no committed lockfile.
 
 Then ask: `Type CONFIRM to proceed with the update.`  Do not clone source,
-create temporary checkouts, modify tracked files, run `cargo generate-lockfile`,
-run `guix import`, or run `guix build` until the user replies with the exact
-standalone keyword `CONFIRM`.  Ordinary affirmative replies do not authorize
-the update.
+create temporary checkouts, modify tracked files, run `guix import`, or run
+`guix build` until the user replies with the exact standalone keyword
+`CONFIRM`.  Do not run `cargo generate-lockfile` for a launcher or dependency
+that already has a committed lockfile.  Ordinary affirmative replies do not
+authorize the update.
 
-The `CONFIRM` reply authorizes the complete update, including lockfile
-generation and the final Guix build, against the URLs listed in that proposal.
+The `CONFIRM` reply authorizes the complete update, including any necessary
+lockfile generation for sources without a committed lockfile and the final
+Guix build, against the URLs listed in that proposal.
 Do not request a separate build confirmation.  If the target version or any
 URL changes afterwards, present a revised proposal and require `CONFIRM` again.
 
@@ -129,18 +133,29 @@ guix hash -rx "$LAUNCHER_DIR"
 only the relevant `#:version` and `#:hash` in the launcher's package definition.
 The hash is Guix base32, not the Git commit hash.
 
-## 3. Generate and preview the launcher lockfile
+## 3. Use and preview the launcher lockfile
 
-Regenerate the lockfile with Guix-provided Rust and Cargo:
+Treat a committed upstream `Cargo.lock` as part of the release and use it
+unchanged.  Do not run `cargo generate-lockfile` when the launcher already has
+one: Cargo's resolver can upgrade every semver-compatible dependency, changing
+runtime behavior even though the launcher's source is unchanged.
+
+Verify that the checkout contains the lockfile and that the checkout remains
+clean after source inspection:
+
+```sh
+test -f "$LAUNCHER_DIR/Cargo.lock"
+git -C "$LAUNCHER_DIR" status --short
+```
+
+If the launcher has no committed `Cargo.lock`, generate one with Guix-provided
+Rust and Cargo, and record that the dependency graph was resolved by the
+packaging update:
 
 ```sh
 guix shell rust rust:cargo -- sh -c \
   'cd "$1" && cargo generate-lockfile' sh "$LAUNCHER_DIR"
 ```
-
-This can resolve newer compatible crate versions than the lockfile committed
-upstream.  That is expected: import the generated lockfile that Guix will
-actually use.
 
 Generate an import preview first, without changing the repository.  Use a
 fresh file owned by this update rather than a fixed temporary filename:
@@ -224,14 +239,22 @@ running `guix hash -rx` on the checkout.
 
 ### Import the special package's own closure
 
-Every new standalone Git/workspace package needs its own generated lockfile and
-import.  For each one:
+Every new standalone Git/workspace package needs its own lockfile and import.
+Use its committed `Cargo.lock` unchanged when one exists; generate a lockfile
+only when the source does not provide one.  Always use the versioned crate
+package name when importing its closure, for example
+`anime-launcher-sdk-1.36.11`, not `anime-launcher-sdk`.  The `make-*` helpers
+look up Cargo inputs under that versioned symbol; importing the unversioned name
+creates an unusable mapping and later causes Guix to report
+`no Cargo inputs available` for the standalone package.
+
+For each one:
 
 1. create a fresh directory with `mktemp -d`, then clone the referenced tag or
    commit into it;
-2. run `cargo generate-lockfile` in that directory through `guix shell rust
-   rust:cargo`;
-3. import the crate package from that lockfile;
+2. verify its committed `Cargo.lock`, or run `cargo generate-lockfile` through
+   `guix shell rust rust:cargo` only when no lockfile exists;
+3. import the versioned crate package from that lockfile;
 4. create the source package and replace the raw origin with its alias;
 5. repeat for any further raw Git/workspace origins revealed by the import.
 
@@ -243,8 +266,9 @@ git clone --depth 1 --branch 1.36.7 \
   https://github.com/an-anime-team/anime-launcher-sdk \
   "$DEPENDENCY_DIR"
 
-guix shell rust rust:cargo -- sh -c \
-  'cd "$1" && cargo generate-lockfile' sh "$DEPENDENCY_DIR"
+test -f "$DEPENDENCY_DIR/Cargo.lock" || \
+  guix shell rust rust:cargo -- sh -c \
+    'cd "$1" && cargo generate-lockfile' sh "$DEPENDENCY_DIR"
 
 guix import --insert=aagl/packages/rust-crates.scm crate \
   --lockfile="$DEPENDENCY_DIR/Cargo.lock" \
