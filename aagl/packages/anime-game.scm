@@ -9,8 +9,8 @@
 
 (define an-anime-game-launcher-real
   (make-aagl #:name "an-anime-game-launcher"
-             #:version "3.19.7"
-             #:hash "08ymnc1w6r384r0k4s8n1cifyl18jaxs40bylhhmf9rjy55i5lmv"))
+             #:version "3.19.8"
+             #:hash "1hkm39laggn2cnb8mq4wa9862pj1amm9rhb8ns5i4l3q37kx0321"))
 
 (define-public (an-anime-game-launcher-for driver)
   (aagl-fhs-for an-anime-game-launcher-real driver))
