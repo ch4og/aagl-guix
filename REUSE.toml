@@ -8,3 +8,8 @@ path = ["logo.png"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2025 Nikita Mitasov <me@ch4og.com>"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = [".claude/**", ".agents/**"]
+SPDX-FileCopyrightText = "2026 Nikita Mitasov <me@ch4og.com>"
+SPDX-License-Identifier = "CC0-1.0"
